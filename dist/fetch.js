@@ -67,6 +67,8 @@ function throwIfPathIsNotAwaitingResolution(path) {
   }
 }
 
+window.fetch = window.fetch; // For some unexplainable reason, PhantomJS doesn't pass the tests without this.
+
 function setupFakeFetch() {
   pathToPromisesMap = {};
   originalFetch = window.fetch;
