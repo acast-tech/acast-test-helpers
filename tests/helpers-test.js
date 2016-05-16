@@ -1,7 +1,6 @@
-import { setupAsync, andThen, waitUntil } from '../src';
-import { waitUntilExists } from '../src';
-import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src';
-import { setupSmoke, waitUntilFetchResolves } from '../src';
+import { setupAsync, andThen, waitUntil } from '../src/async';
+import { waitUntilExists } from '../src/acceptance';
+import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
 describe('andThen', () => {
   it('cannot be called without having called setupAsync()', () => {
@@ -308,56 +307,10 @@ describe('fake fetch', () => {
         ).then(() => {
           expect(firstCallback).to.have.been.calledOnce().and.to.have.been.calledWith({ order: 'first' });
           expect(secondCallback).to.have.been.calledOnce().and.to.have.been.calledWith({ order: 'second' });
+          ;
 
           expect(secondCallback).to.have.been.calledAfter(firstCallback);
         }).then(done).catch(done);
-      });
-    });
-  });
-});
-
-describe('setupSmoke', () => {
-  let fetchBefore;
-
-  beforeEach(() => {
-    setupFakeFetch();
-    fetchBefore = fetch;
-  });
-
-  afterEach(() => {
-    andThen(() => {
-      teardownFakeFetch();
-    })
-  });
-
-  setupSmoke();
-
-  afterEach('on teardown it restores fetch to what it was before', () => {
-    expect(window.fetch).to.equal(fetchBefore);
-  });
-
-  it('replaces fetch', () => {
-    expect(window.fetch).to.not.equal(fetchBefore);
-  });
-
-  it('replaces fetch with callable that passes through to original fetch', () => {
-    window.fetch('/some/path');
-    expect(fetchBefore).to.have.been.calledWith('/some/path');
-  });
-
-  describe('waitUntilFetchResolves', () => {
-    it('can be used to wait for the fetch to resolve', () => {
-      let callback = sinon.spy();
-      window.fetch('/some/path').then(response => response.json()).then(callback);
-
-      setTimeout(() => {
-        fetchRespond('/some/path').resolveWith({ what: 'ever' });
-      }, 200);
-
-      waitUntilFetchResolves('/some/path');
-
-      andThen(() => {
-        expect(callback).to.have.been.calledOnce();
       });
     });
   });
