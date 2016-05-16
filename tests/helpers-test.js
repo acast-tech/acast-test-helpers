@@ -1,5 +1,5 @@
 import { setupAsync, andThen, waitUntil } from '../src/async';
-import { waitUntilExists } from '../src/acceptance';
+import { waitUntilExists, waitUntilDisappears } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
 describe('andThen', () => {
@@ -88,9 +88,15 @@ describe('waitUntil', () => {
 describe('waitUntilExists', () => {
   setupAsync();
 
-  it('it resolves with a jquery object of the selector when it exists', () => {
+  const label = document.createElement('label');
+  label.innerHTML = 'foobar';
+
+  afterEach(() => {
+    document.body.removeChild(label);
+  });
+
+  it('resolves with a jquery object of the selector when it exists', () => {
     setTimeout(() => {
-      const label = document.createElement('label');
       label.innerHTML = 'foobar';
       document.body.appendChild(label);
     }, 1000);
@@ -100,6 +106,42 @@ describe('waitUntilExists', () => {
     andThen((label) => {
       expect(label.text()).to.equal('foobar');
     });
+  });
+});
+
+describe('waitUntilDisappears', () => {
+  setupAsync();
+
+  const label = document.createElement('label');
+  label.innerHTML = 'foobar';
+
+  it('resolve when the object disappears after having showed', (done) => {
+    let callback = sinon.spy();
+
+    waitUntilDisappears('label:contains("foobar")');
+
+    andThen(callback);
+
+    setTimeout(() => {
+      expect(callback).to.not.have.been.called('Called before selector appeared!');
+    }, 150);
+
+    setTimeout(() => {
+      document.body.appendChild(label);
+    }, 250);
+
+    setTimeout(() => {
+      expect(callback).to.not.have.been.called('Called before selector disappeared!');
+    }, 350);
+
+    setTimeout(() => {
+      document.body.removeChild(label);
+    }, 450);
+
+    setTimeout(() => {
+      expect(callback).to.have.been.calledOnce('Not called when selector disappeared!');
+      done();
+    }, 550);
   });
 });
 
@@ -307,7 +349,6 @@ describe('fake fetch', () => {
         ).then(() => {
           expect(firstCallback).to.have.been.calledOnce().and.to.have.been.calledWith({ order: 'first' });
           expect(secondCallback).to.have.been.calledOnce().and.to.have.been.calledWith({ order: 'second' });
-          ;
 
           expect(secondCallback).to.have.been.calledAfter(firstCallback);
         }).then(done).catch(done);

@@ -53,4 +53,11 @@ export function waitUntilExists(selector, pollInterval = 100) {
   }, pollInterval);
 }
 
+export function waitUntilDisappears(selector, pollInterval = 100) {
+  waitUntilExists(selector, pollInterval);
+  waitUntil(() => {
+    return $(selector).length === 0;
+  }, pollInterval);
+}
+
 export const find = $;
