@@ -14,12 +14,6 @@ var _fetch = require('./fetch');
 
 var fetch = _interopRequireWildcard(_fetch);
 
-var _smoke = require('./smoke');
-
-var smoke = _interopRequireWildcard(_smoke);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-window.fetch = window.fetch; // For some unexplainable reason, PhantomJS doesn't pass the tests in projects installing this package, without this.
-
-module.exports = _extends({}, acceptance, async, fetch, smoke);
+module.exports = _extends({}, acceptance, async, fetch);

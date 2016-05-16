@@ -8,6 +8,7 @@ exports.setupAndTeardownApp = setupAndTeardownApp;
 exports.visit = visit;
 exports.click = click;
 exports.waitUntilExists = waitUntilExists;
+exports.waitUntilDisappears = waitUntilDisappears;
 
 var _jquery = require('jquery');
 
@@ -73,6 +74,15 @@ function waitUntilExists(selector) {
   (0, _async.waitUntil)(function () {
     var selected = (0, _jquery2.default)(selector);
     return selected.length ? selected : false;
+  }, pollInterval);
+}
+
+function waitUntilDisappears(selector) {
+  var pollInterval = arguments.length <= 1 || arguments[1] === undefined ? 100 : arguments[1];
+
+  waitUntilExists(selector, pollInterval);
+  (0, _async.waitUntil)(function () {
+    return (0, _jquery2.default)(selector).length === 0;
   }, pollInterval);
 }
 
