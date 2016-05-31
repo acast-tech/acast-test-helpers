@@ -19,9 +19,16 @@ function setupApp(renderAppWithHistoryIntoElement) {
 function teardownApp() {
   unmountComponentAtNode(root);
   document.body.removeChild(root);
+  
+  history = null;
+  root = null;
 }
 
 export function setupAndTeardownApp(renderAppWithHistoryIntoElement) {
+  if (!renderAppWithHistoryIntoElement || renderAppWithHistoryIntoElement.length !== 2) {
+    throw new Error('setupAndTeardownApp() requires a single argument that is a function with two parameters: (history, elementToRenderInto)');
+  }
+
   setupAsync();
 
   beforeEach('setup app', () => setupApp(renderAppWithHistoryIntoElement));
@@ -30,6 +37,9 @@ export function setupAndTeardownApp(renderAppWithHistoryIntoElement) {
 }
 
 export function visit(route) {
+  if (!history) {
+    throw new Error('You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!');
+  }
   andThen(() => {
     history.push(route);
   });

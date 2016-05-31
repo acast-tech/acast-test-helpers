@@ -1,5 +1,5 @@
 import { setupAsync, andThen, waitUntil } from '../src/async';
-import { waitUntilExists, waitUntilDisappears } from '../src/acceptance';
+import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
 describe('andThen', () => {
@@ -353,6 +353,28 @@ describe('fake fetch', () => {
           expect(secondCallback).to.have.been.calledAfter(firstCallback);
         }).then(done).catch(done);
       });
+    });
+  });
+});
+
+describe('visit', () => {
+  describe('when setupAndTeardownApp has not been called', () => {
+    setupAsync();
+    it('throws', () => {
+      expect(() => {
+        visit('/some/path');
+      }).to.throw('You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!')
+    });
+  });
+
+  describe('when setupAndTeardownApp has not been called', () => {
+    const renderAppWithHistoryIntoElement = (history, element) => {};
+    setupAndTeardownApp(renderAppWithHistoryIntoElement);
+
+    it('does not throw', () => {
+      expect(() => {
+        visit('/some/path');
+      }).to.not.throw();
     });
   });
 });
