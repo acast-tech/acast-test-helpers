@@ -39,9 +39,16 @@ function setupApp(renderAppWithHistoryIntoElement) {
 function teardownApp() {
   (0, _reactDom.unmountComponentAtNode)(root);
   document.body.removeChild(root);
+
+  history = null;
+  root = null;
 }
 
 function setupAndTeardownApp(renderAppWithHistoryIntoElement) {
+  if (!renderAppWithHistoryIntoElement || renderAppWithHistoryIntoElement.length !== 2) {
+    throw new Error('setupAndTeardownApp() requires a single argument that is a function with two parameters: (history, elementToRenderInto)');
+  }
+
   (0, _async.setupAsync)();
 
   beforeEach('setup app', function () {
@@ -52,6 +59,9 @@ function setupAndTeardownApp(renderAppWithHistoryIntoElement) {
 }
 
 function visit(route) {
+  if (!history) {
+    throw new Error('You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!');
+  }
   (0, _async.andThen)(function () {
     history.push(route);
   });
