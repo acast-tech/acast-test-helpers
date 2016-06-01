@@ -14,8 +14,6 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactRouter = require('react-router');
-
 var _history = require('history');
 
 var _reactDom = require('react-dom');
@@ -68,8 +66,8 @@ function visit(route) {
 }
 
 function click(selector) {
-  (0, _async.andThen)(function () {
-    var jqueryElement = (0, _jquery2.default)(selector);
+  waitUntilExists(selector);
+  (0, _async.andThen)(function (jqueryElement) {
     expect(jqueryElement.length).to.equal(1, 'Cannot click selector \'' + selector + '\'');
     var rawElementToClick = jqueryElement.get(0);
     var clickEvent = document.createEvent('MouseEvents');
