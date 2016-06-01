@@ -1,5 +1,5 @@
 import { setupAsync, andThen, waitUntil } from '../src/async';
-import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp } from '../src/acceptance';
+import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
 describe('andThen', () => {
@@ -376,5 +376,43 @@ describe('visit', () => {
         visit('/some/path');
       }).to.not.throw();
     });
+  });
+});
+
+describe('click', () => {
+  setupAsync();
+
+  let elementToClick;
+
+  beforeEach(() => {
+    elementToClick = document.createElement('div');
+    elementToClick.className = 'element-to-click';
+  });
+
+  afterEach(() => {
+    document.body.removeChild(elementToClick);
+  });
+
+  it('triggers click event on selected elements', () => {
+    document.body.appendChild(elementToClick);
+    const spy = sinon.spy();
+    elementToClick.addEventListener('click', spy);
+    click('.element-to-click');
+    andThen(() => {
+      expect(spy).to.have.been.calledOnce();
+    });
+  });
+
+  it('waits until element shows up before trying to click it', () => {
+    const spy = sinon.spy();
+    elementToClick.addEventListener('click', spy);
+    click('.element-to-click');
+    andThen(() => {
+      expect(spy).to.have.been.calledOnce();
+    });
+
+    setTimeout(() => {
+      document.body.appendChild(elementToClick);
+    }, 500);
   });
 });

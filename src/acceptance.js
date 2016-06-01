@@ -45,8 +45,8 @@ export function visit(route) {
 }
 
 export function click(selector) {
-  andThen(() => {
-    const jqueryElement = $(selector);
+  waitUntilExists(selector);
+  andThen((jqueryElement) => {
     expect(jqueryElement.length).to.equal(1, `Cannot click selector '${selector}'`);
     const rawElementToClick = jqueryElement.get(0);
     const clickEvent = document.createEvent('MouseEvents');
