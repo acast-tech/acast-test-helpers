@@ -28,7 +28,7 @@ var history = void 0;
 var root = void 0;
 
 function setupApp(renderAppWithHistoryIntoElement) {
-  history = (0, _reactRouter.useRouterHistory)(_history.createMemoryHistory)({ queryKey: false });
+  history = (0, _history.createMemoryHistory)();
 
   root = document.createElement('div');
   document.body.appendChild(root);
