@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import { useRouterHistory } from 'react-router';
 import { createMemoryHistory } from 'history';
 import { unmountComponentAtNode } from 'react-dom';
 import { setupAsync, andThen, waitUntil } from './async';
@@ -8,7 +7,7 @@ let history;
 let root;
 
 function setupApp(renderAppWithHistoryIntoElement) {
-  history = useRouterHistory(createMemoryHistory)({ queryKey: false });
+  history = createMemoryHistory();
 
   root = document.createElement('div');
   document.body.appendChild(root);
