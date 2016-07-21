@@ -17,6 +17,7 @@
     "babel-preset-stage-2": "6.5.0",
     "chai": "3.5.0",
     "dirty-chai": "1.2.2",
+    "phantomjs": "2.1.7",
     "sinon": "1.17.4",
     "sinon-chai": "2.8.0",
     "testem": "1.7.0",
