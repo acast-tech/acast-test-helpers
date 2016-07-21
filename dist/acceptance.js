@@ -14,6 +14,8 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _reactRouter = require('react-router');
+
 var _history = require('history');
 
 var _reactDom = require('react-dom');
@@ -26,7 +28,7 @@ var history = void 0;
 var root = void 0;
 
 function setupApp(renderAppWithHistoryIntoElement) {
-  history = (0, _history.createMemoryHistory)();
+  history = (0, _reactRouter.useRouterHistory)(_history.createMemoryHistory)({ queryKey: false });
 
   root = document.createElement('div');
   document.body.appendChild(root);
