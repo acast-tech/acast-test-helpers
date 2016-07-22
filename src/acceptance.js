@@ -1,14 +1,11 @@
 import $ from 'jquery';
-import { useRouterHistory } from 'react-router';
-import { createMemoryHistory } from 'history';
-import { unmountComponentAtNode } from 'react-dom';
 import { setupAsync, andThen, waitUntil } from './async';
 
-let history;
 let root;
+let history;
 
-function setupApp(renderAppWithHistoryIntoElement) {
-  history = useRouterHistory(createMemoryHistory)({ queryKey: false });
+function setupApp(createHistory, renderAppWithHistoryIntoElement) {
+  history = createHistory();
 
   root = document.createElement('div');
   document.body.appendChild(root);
@@ -17,23 +14,26 @@ function setupApp(renderAppWithHistoryIntoElement) {
 }
 
 function teardownApp() {
-  unmountComponentAtNode(root);
   document.body.removeChild(root);
   
   history = null;
   root = null;
 }
 
-export function setupAndTeardownApp(renderAppWithHistoryIntoElement) {
-  if (!renderAppWithHistoryIntoElement || renderAppWithHistoryIntoElement.length !== 2) {
-    throw new Error('setupAndTeardownApp() requires a single argument that is a function with two parameters: (history, elementToRenderInto)');
+export function setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement) {
+  if (!createHistory || !renderAppWithHistoryIntoElement) {
+    throw new Error('setupAndTearDownApp() requires two arguments: createHistory and renderAppWithHistoryIntoElement');
+  }
+
+  if (renderAppWithHistoryIntoElement.length !== 2) {
+    throw new Error('renderAppWithHistoryIntoElement has to accept two arguments: (createHistory, elementToRenderInto)');
   }
 
   setupAsync();
 
-  beforeEach('setup app', () => setupApp(renderAppWithHistoryIntoElement));
+  beforeEach(() => setupApp(createHistory, renderAppWithHistoryIntoElement));
 
-  afterEach('teardown app', teardownApp);
+  afterEach(teardownApp);
 }
 
 export function visit(route) {

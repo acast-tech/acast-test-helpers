@@ -367,9 +367,10 @@ describe('visit', () => {
     });
   });
 
-  describe('when setupAndTeardownApp has not been called', () => {
+  describe('when setupAndTeardownApp has been called', () => {
+    const createHistory = () => ({push: () => {}});
     const renderAppWithHistoryIntoElement = (history, element) => {};
-    setupAndTeardownApp(renderAppWithHistoryIntoElement);
+    setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement);
 
     it('does not throw', () => {
       expect(() => {
