@@ -18,13 +18,13 @@
     "chai": "3.5.0",
     "dirty-chai": "1.2.2",
     "phantomjs": "2.1.7",
-    "redux-mock-store": "1.1.2",
     "sinon": "1.17.4",
     "sinon-chai": "2.8.0",
     "testem": "1.7.0",
     "webpack": "1.13.0"
   },
   "dependencies": {
+    "redux-mock-store": "1.1.2",
     "jquery": "2.2.3"
   }
 }
