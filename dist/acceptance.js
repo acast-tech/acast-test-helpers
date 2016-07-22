@@ -14,21 +14,15 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactRouter = require('react-router');
-
-var _history = require('history');
-
-var _reactDom = require('react-dom');
-
 var _async = require('./async');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var history = void 0;
 var root = void 0;
+var history = void 0;
 
-function setupApp(renderAppWithHistoryIntoElement) {
-  history = (0, _reactRouter.useRouterHistory)(_history.createMemoryHistory)({ queryKey: false });
+function setupApp(createHistory, renderAppWithHistoryIntoElement) {
+  history = createHistory();
 
   root = document.createElement('div');
   document.body.appendChild(root);
@@ -37,25 +31,28 @@ function setupApp(renderAppWithHistoryIntoElement) {
 }
 
 function teardownApp() {
-  (0, _reactDom.unmountComponentAtNode)(root);
   document.body.removeChild(root);
 
   history = null;
   root = null;
 }
 
-function setupAndTeardownApp(renderAppWithHistoryIntoElement) {
-  if (!renderAppWithHistoryIntoElement || renderAppWithHistoryIntoElement.length !== 2) {
-    throw new Error('setupAndTeardownApp() requires a single argument that is a function with two parameters: (history, elementToRenderInto)');
+function setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement) {
+  if (!createHistory || !renderAppWithHistoryIntoElement) {
+    throw new Error('setupAndTearDownApp() requires two arguments: createHistory and renderAppWithHistoryIntoElement');
+  }
+
+  if (renderAppWithHistoryIntoElement.length !== 2) {
+    throw new Error('renderAppWithHistoryIntoElement has to accept two arguments: (createHistory, elementToRenderInto)');
   }
 
   (0, _async.setupAsync)();
 
-  beforeEach('setup app', function () {
-    return setupApp(renderAppWithHistoryIntoElement);
+  beforeEach(function () {
+    return setupApp(createHistory, renderAppWithHistoryIntoElement);
   });
 
-  afterEach('teardown app', teardownApp);
+  afterEach(teardownApp);
 }
 
 function visit(route) {
