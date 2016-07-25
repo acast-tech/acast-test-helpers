@@ -1,4 +1,4 @@
-const testLibs = require('./tests/libs.js');
+const testLibs = require('../tests/libs.js');
 
 module.exports = {
   src_files: testLibs.concat([
