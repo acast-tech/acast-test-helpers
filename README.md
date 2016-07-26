@@ -1,5 +1,5 @@
 # acast-test-helpers
-For testing with Mocha. Contains helpers for async and acceptance tests, and also a nice way to stub server when using window.fetch.
+For testing with Mocha. Currently only runs in browsers, see issue #1. Contains helpers for async and acceptance tests, and also a nice way to stub server when using window.fetch.
 
 ## Installation
 Make sure to add our GemFury repo to you npm path with something like this: https://github.com/acastSthlm/test-setup-and-examples/blob/master/.npmrc
