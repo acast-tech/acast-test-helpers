@@ -56,6 +56,16 @@ export function click(selector) {
   });
 }
 
+export function fillIn(selector, value) {
+  waitUntilExists(selector);
+  andThen(jqueryElement => {
+    expect(jqueryElement.length).to.equal(1, `Cannot fillIn selector '${selector}'`);
+    const target = jqueryElement[0];
+    target.value = value;
+    target.dispatchEvent(new Event('input', {bubbles: true}));
+  });
+}
+
 export function waitUntilExists(selector, pollInterval = 100) {
   waitUntil(() => {
     const selected = $(selector);
