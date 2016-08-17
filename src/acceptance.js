@@ -4,13 +4,13 @@ import { setupAsync, andThen, waitUntil } from './async';
 let root;
 let history;
 
-function setupApp(createHistory, renderAppWithHistoryIntoElement) {
+function setupApp(createHistory, renderAppIntoElementWithHistory) {
   history = createHistory();
 
   root = document.createElement('div');
   document.body.appendChild(root);
 
-  renderAppWithHistoryIntoElement(history, root);
+  renderAppIntoElementWithHistory(root, history);
 }
 
 function teardownApp() {
@@ -20,18 +20,18 @@ function teardownApp() {
   root = null;
 }
 
-export function setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement) {
-  if (!createHistory || !renderAppWithHistoryIntoElement) {
-    throw new Error('setupAndTearDownApp() requires two arguments: createHistory and renderAppWithHistoryIntoElement');
+export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHistory) {
+  if (!createHistory || !renderAppIntoElementWithHistory) {
+    throw new Error('setupAndTearDownApp() requires two arguments: createHistory and renderAppIntoElementWithHistory');
   }
 
-  if (renderAppWithHistoryIntoElement.length !== 2) {
-    throw new Error('renderAppWithHistoryIntoElement has to accept two arguments: (createHistory, elementToRenderInto)');
+  if (renderAppIntoElementWithHistory.length < 1) {
+    throw new Error('renderAppIntoElementWithHistory has to accept at least one argument: (elementToRenderInto)');
   }
 
   setupAsync();
 
-  beforeEach(() => setupApp(createHistory, renderAppWithHistoryIntoElement));
+  beforeEach(() => setupApp(createHistory, renderAppIntoElementWithHistory));
 
   afterEach(teardownApp);
 }
