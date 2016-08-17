@@ -4,9 +4,18 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run test && babel src --out-dir dist",
-    "test": "webpack && testem ci -f ./testem/testem.js"
+    "test": "webpack && testem ci -f ./testem/testem.js",
+    "build": "npm run build:production",
+    "build:production": "babel src --out-dir dist --copy-files",
+    "build:watch": "npm run build:production -- --watch",
+    "prerelease": "npm run build && npm test",
+    "release": "npm pack && curl -F package=@$npm_package_name-$npm_package_version.tgz $npm_package_registry",
+    "env": "env"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -29,5 +38,6 @@
     "fake-xml-http-request": "1.4.0",
     "jquery": "2.2.3",
     "redux-mock-store": "1.1.2"
-  }
+  },
+  "registry": "***REMOVED***"
 }
