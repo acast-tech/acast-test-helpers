@@ -62,7 +62,16 @@ export function fillIn(selector, value) {
     expect(jqueryElement.length).to.equal(1, `Cannot fillIn selector '${selector}'`);
     const target = jqueryElement[0];
     target.value = value;
-    target.dispatchEvent(new Event('input', {bubbles: true}));
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+}
+
+export function keyEventIn(selector, keyEventString, keyCode) {
+  waitUntilExists(selector);
+  andThen(jqueryElement => {
+    const event = new Event(keyEventString, { bubbles: true });
+    event.keyCode = keyCode;
+    jqueryElement.get(0).dispatchEvent(event);
   });
 }
 
