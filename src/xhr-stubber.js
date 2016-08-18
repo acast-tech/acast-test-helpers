@@ -5,6 +5,11 @@ import FakeXMLHttpRequest from 'fake-xml-http-request';
 function FakeRequest() {
   FakeXMLHttpRequest.call(this);
   fakehr.addRequest(this);
+
+  this.respondWithJson = (statusCode, payload) => (
+    this.respond(statusCode, { 'Content-Type': 'application/json' }, JSON.stringify(payload))
+  );
+
 }
 FakeRequest.prototype = FakeXMLHttpRequest.prototype;
 
