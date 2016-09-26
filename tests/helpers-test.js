@@ -44,19 +44,19 @@ describe('waitUntil', () => {
     });
   });
 
-  it('polls at an interval passed in milliseconds', (done) => {
+  it('polls at every hundred milliseconds', (done) => {
     let value = false;
     let didComplete = false;
 
     setTimeout(() => {
       value = true;
-    }, 300);
+    }, 50);
 
     setTimeout(() => {
       value = false;
-    }, 700);
+    }, 80);
 
-    waitUntil(() => value, 1000);
+    waitUntil(() => value);
 
     andThen(() => {
       didComplete = true;
@@ -74,10 +74,9 @@ describe('waitUntil', () => {
 
     setTimeout(() => {
       value = false;
-    }, 100);
+    }, 1);
 
-    const pollInterval = 1000;
-    waitUntil(() => value, pollInterval);
+    waitUntil(() => value);
 
     andThen(() => {
       expect(value).to.be.true();

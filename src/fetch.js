@@ -45,7 +45,7 @@ function notSetUp() {
 function throwIfNotSetUp() {
   if (notSetUp()) {
     throw new Error(
-      'fetchRespond has to be called after setupFakeFetch() and before teardownFakeFetch()'
+      'acast-test-helpers#fetchRespond(): fetchRespond has to be called after setupFakeFetch() and before teardownFakeFetch()'
     );
   }
 }
@@ -53,7 +53,7 @@ function throwIfNotSetUp() {
 function throwIfPathIsNotAwaitingResolution(path) {
   if (pathIsNotAwaitingResolution(path)) {
     throw new Error(
-      `Could not find '${path}' among the fetched paths: [${getFormattedPathsAwaitingResolution()}]`
+      `acast-test-helpers#fetchRespond(): Could not find '${path}' among the fetched paths: [${getFormattedPathsAwaitingResolution()}]`
     );
   }
 }
