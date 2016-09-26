@@ -62,4 +62,10 @@ function waitUntil(thisReturnsTruthy, errorMessage=`acast-test-helpers#waitUntil
   }));
 }
 
-export { setupAsync, andThen, waitUntil };
+function waitMillis(milliseconds) {
+  andThen(() => new Promise(resolve => {
+    setTimeout(resolve, milliseconds);
+  }));
+}
+
+export { setupAsync, andThen, waitUntil, waitMillis };
