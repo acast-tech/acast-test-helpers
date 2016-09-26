@@ -22,11 +22,11 @@ function teardownApp() {
 
 export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHistory) {
   if (!createHistory || !renderAppIntoElementWithHistory) {
-    throw new Error('setupAndTearDownApp() requires two arguments: createHistory and renderAppIntoElementWithHistory');
+    throw new Error('acast-test-helpers#setupAndTeardownApp(): Requires two arguments: createHistory and renderAppIntoElementWithHistory');
   }
 
   if (renderAppIntoElementWithHistory.length < 1) {
-    throw new Error('renderAppIntoElementWithHistory has to accept at least one argument: (elementToRenderInto)');
+    throw new Error('acast-test-helpers#setupAndTeardownApp(): renderAppIntoElementWithHistory has to accept at least one argument: (elementToRenderInto)');
   }
 
   setupAsync();
@@ -38,7 +38,7 @@ export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHisto
 
 export function visit(route) {
   if (!history) {
-    throw new Error('You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!');
+    throw new Error('acast-test-helpers#visit(): You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!');
   }
   andThen(() => {
     history.push(route);
@@ -46,9 +46,9 @@ export function visit(route) {
 }
 
 export function click(selector) {
-  waitUntilExists(selector);
+  waitUntilExists(selector, `acast-test-helpers#click(): Selector never showed up '${selector}'`);
   andThen((jqueryElement) => {
-    expect(jqueryElement.length).to.equal(1, `Cannot click selector '${selector}'`);
+    expect(jqueryElement.length).to.equal(1, `acast-test-helpers#click(): Found more than one match for selector: '${selector}'`);
     const rawElementToClick = jqueryElement.get(0);
     const clickEvent = document.createEvent('MouseEvents');
     clickEvent.initEvent('click', true /* bubble */, true /* cancelable */);
@@ -57,9 +57,9 @@ export function click(selector) {
 }
 
 export function fillIn(selector, value) {
-  waitUntilExists(selector);
+  waitUntilExists(selector, `acast-test-helpers#fillIn(): Selector never showed up '${selector}'`);
   andThen(jqueryElement => {
-    expect(jqueryElement.length).to.equal(1, `Cannot fillIn selector '${selector}'`);
+    expect(jqueryElement.length).to.equal(1, `acast-test-helpers#fillIn(): Found more than one match for selector: '${selector}'`);
     const target = jqueryElement[0];
     target.value = value;
     target.dispatchEvent(new Event('input', { bubbles: true }));
@@ -67,7 +67,7 @@ export function fillIn(selector, value) {
 }
 
 export function keyEventIn(selector, keyEventString, keyCode) {
-  waitUntilExists(selector);
+  waitUntilExists(selector, `acast-test-helpers#keyEventIn(): Selector never showed up: '${selector}'`);
   andThen(jqueryElement => {
     const event = new Event(keyEventString, { bubbles: true });
     event.keyCode = keyCode;
@@ -75,18 +75,18 @@ export function keyEventIn(selector, keyEventString, keyCode) {
   });
 }
 
-export function waitUntilExists(selector, pollInterval = 100) {
+export function waitUntilExists(selector, errorMessage = `acast-test-helpers#waitUntilExists(): Selector never showed up: '${selector}'`) {
   waitUntil(() => {
     const selected = $(selector);
     return selected.length ? selected : false;
-  }, pollInterval);
+  }, errorMessage);
 }
 
-export function waitUntilDisappears(selector, pollInterval = 100) {
-  waitUntilExists(selector, pollInterval);
+export function waitUntilDisappears(selector) {
+  waitUntilExists(selector, `acast-test-helpers#waitUntilDisappears(): Selector never showed up: '${selector}'`);
   waitUntil(() => {
     return $(selector).length === 0;
-  }, pollInterval);
+  }, `acast-test-helpers#waitUntilDisappears(): Selector showed up but never disappeared: '${selector}'`);
 }
 
 export const find = $;
