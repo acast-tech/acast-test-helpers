@@ -1,4 +1,4 @@
-import { setupAsync, andThen, waitUntil } from '../src/async';
+import { setupAsync, andThen, waitUntil, waitMillis } from '../src/async';
 import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
@@ -80,6 +80,22 @@ describe('waitUntil', () => {
 
     andThen(() => {
       expect(value).to.be.true();
+    });
+  });
+});
+
+describe('waitMillis', () => {
+  setupAsync();
+
+  it('waits the specified amount of milliseconds', () => {
+    const start = Date.now();
+
+    waitMillis(1337);
+
+    andThen(() => {
+      const elapsed = Date.now() - start;
+      const tolerance = 20;
+      expect(elapsed).to.be.closeTo(1337, tolerance);
     });
   });
 });
