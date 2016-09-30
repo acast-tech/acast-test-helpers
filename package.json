@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "webpack && testem ci -f ./testem/testem.js",
+    "test:dev": "webpack && testem run -f ./testem/testem-dev.js",
     "build": "npm run build:production",
     "build:production": "babel src --out-dir dist --copy-files",
     "build:watch": "npm run build:production -- --watch",
