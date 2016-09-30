@@ -6,5 +6,4 @@ module.exports = {
   ]),
   framework: 'mocha',
   launch_in_ci: ['PhantomJS'],
-  launch_in_dev: ['Chrome'],
 };
