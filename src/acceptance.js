@@ -53,6 +53,10 @@ export function mouseDown(selector, options) {
   triggerMouseEvent(mouseDown, selector, options);
 }
 
+export function mouseUp(selector, options) {
+  triggerMouseEvent(mouseUp, selector, options);
+}
+
 function triggerMouseEvent(exportedFunction, selector, options) {
   const functionName = exportedFunction.name;
   const eventName = functionName.toLowerCase();
