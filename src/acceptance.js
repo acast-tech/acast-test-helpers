@@ -63,9 +63,8 @@ function triggerMouseEvent(exportedFunction, selector, options) {
   waitUntilExists(selector, `acast-test-helpers#${functionName}(): Selector never showed up '${selector}'`);
   andThen((jqueryElement) => {
     expect(jqueryElement.length).to.equal(1, `acast-test-helpers#${functionName}(): Found more than one match for selector: '${selector}'`);
-    let mouseEvent;
-    mouseEvent = new $.Event(eventName, options);
-    jqueryElement.trigger(mouseEvent, options);
+    let event = createMouseEvent(eventName, options);
+    jqueryElement[0].dispatchEvent(event);
   });
 }
 
@@ -103,3 +102,38 @@ export function waitUntilDisappears(selector) {
 }
 
 export const find = $;
+
+function createMouseEvent(type, {
+  bubbles = true,
+  cancelable = (type != "mousemove"),
+  view = window,
+  detail = 0,
+  screenX = 0,
+  screenY = 0,
+  clientX = 0,
+  clientY = 0,
+  ctrlKey = false,
+  altKey = false,
+  shiftKey = false,
+  metaKey = false,
+  button = 0,
+  relatedTarget = document.body.parentNode
+} = {}) {
+  var result;
+
+  try {
+    result = new MouseEvent(type, options);
+  }
+  catch (e) {
+    result = document.createEvent("MouseEvents");
+    result.initMouseEvent(type,
+      bubbles, cancelable, view, detail,
+      screenX, screenY, clientX, clientY,
+      ctrlKey, altKey, shiftKey, metaKey,
+      button, relatedTarget
+    );
+  }
+
+  return result;
+}
+
