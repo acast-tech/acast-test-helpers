@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { setupAsync, andThen, waitUntil, waitMillis } from '../src/async';
-import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click, mouseDown } from '../src/acceptance';
+import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click, mouseDown, mouseUp } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
 describe('andThen', () => {
@@ -399,6 +399,8 @@ describe('visit', () => {
 describe('Mouse Events', () => {
   describeMouseEventHelper(click, 'click');
   describeMouseEventHelper(mouseDown, 'mousedown');
+  describeMouseEventHelper(mouseUp, 'mouseup');
+
   function describeMouseEventHelper(func, eventName) {
     describe(func.name, () => {
       setupAsync();
