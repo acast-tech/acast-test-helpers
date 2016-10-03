@@ -1,5 +1,6 @@
+import $ from 'jquery';
 import { setupAsync, andThen, waitUntil, waitMillis } from '../src/async';
-import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click } from '../src/acceptance';
+import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click, mouseDown } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 
 describe('andThen', () => {
@@ -395,40 +396,59 @@ describe('visit', () => {
   });
 });
 
-describe('click', () => {
-  setupAsync();
+describe('Mouse Events', () => {
+  describeMouseEventHelper(click, 'click');
+  describeMouseEventHelper(mouseDown, 'mousedown');
+  function describeMouseEventHelper(func, eventName) {
+    describe(func.name, () => {
+      setupAsync();
 
-  let elementToClick;
+      let elementToInteractWith;
 
-  beforeEach(() => {
-    elementToClick = document.createElement('div');
-    elementToClick.className = 'element-to-click';
-  });
+      function attachElementToBody() {
+        document.body.appendChild(elementToInteractWith);
+        return elementToInteractWith;
+      }
 
-  afterEach(() => {
-    document.body.removeChild(elementToClick);
-  });
+      beforeEach(() => {
+        elementToInteractWith = document.createElement('div');
+        elementToInteractWith.className = 'element-to-interact-with';
+      });
 
-  it('triggers click event on selected elements', () => {
-    document.body.appendChild(elementToClick);
-    const spy = sinon.spy();
-    elementToClick.addEventListener('click', spy);
-    click('.element-to-click');
-    andThen(() => {
-      expect(spy).to.have.been.calledOnce();
+      afterEach(() => {
+        document.body.removeChild(elementToInteractWith);
+      });
+
+      it(`triggers ${eventName} event on selected element`, () => {
+        attachElementToBody();
+        const spy = sinon.spy();
+        $(elementToInteractWith).on(eventName, spy);
+        func('.element-to-interact-with');
+        andThen(() => {
+          expect(spy).to.have.been.calledOnce();
+        });
+      });
+
+      it('waits until element shows up before trying to interact with it', () => {
+        const spy = sinon.spy();
+        $(elementToInteractWith).on(eventName, spy);
+        func('.element-to-interact-with');
+        andThen(() => {
+          expect(spy).to.have.been.calledOnce();
+        });
+
+        setTimeout(attachElementToBody, 500);
+      });
+
+      it('takes extra options as parameters', (done) => {
+        const element = attachElementToBody();
+        $(element).on(eventName, e => {
+          expect(e.clientX).to.equal(1337);
+          expect(e.clientY).to.equal(1338);
+          done();
+        });
+        func('.element-to-interact-with', {clientX: 1337, clientY: 1338});
+      });
     });
-  });
-
-  it('waits until element shows up before trying to click it', () => {
-    const spy = sinon.spy();
-    elementToClick.addEventListener('click', spy);
-    click('.element-to-click');
-    andThen(() => {
-      expect(spy).to.have.been.calledOnce();
-    });
-
-    setTimeout(() => {
-      document.body.appendChild(elementToClick);
-    }, 500);
-  });
+  }
 });
