@@ -15,7 +15,7 @@ function setupApp(createHistory, renderAppIntoElementWithHistory) {
 
 function teardownApp() {
   document.body.removeChild(root);
-  
+
   history = null;
   root = null;
 }
@@ -45,14 +45,23 @@ export function visit(route) {
   });
 }
 
-export function click(selector) {
-  waitUntilExists(selector, `acast-test-helpers#click(): Selector never showed up '${selector}'`);
+export function click(selector, options) {
+  triggerMouseEvent(click, selector, options);
+}
+
+export function mouseDown(selector, options) {
+  triggerMouseEvent(mouseDown, selector, options);
+}
+
+function triggerMouseEvent(exportedFunction, selector, options) {
+  const functionName = exportedFunction.name;
+  const eventName = functionName.toLowerCase();
+  waitUntilExists(selector, `acast-test-helpers#${functionName}(): Selector never showed up '${selector}'`);
   andThen((jqueryElement) => {
-    expect(jqueryElement.length).to.equal(1, `acast-test-helpers#click(): Found more than one match for selector: '${selector}'`);
-    const rawElementToClick = jqueryElement.get(0);
-    const clickEvent = document.createEvent('MouseEvents');
-    clickEvent.initEvent('click', true /* bubble */, true /* cancelable */);
-    rawElementToClick.dispatchEvent(clickEvent);
+    expect(jqueryElement.length).to.equal(1, `acast-test-helpers#${functionName}(): Found more than one match for selector: '${selector}'`);
+    let mouseEvent;
+    mouseEvent = new $.Event(eventName, options);
+    jqueryElement.trigger(mouseEvent, options);
   });
 }
 
