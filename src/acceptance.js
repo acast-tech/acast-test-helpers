@@ -66,8 +66,11 @@ function triggerMouseEvent(exportedFunction, selector, options) {
   const eventName = functionName.toLowerCase();
   waitUntilExists(selector, `acast-test-helpers#${functionName}(): Selector never showed up '${selector}'`);
   andThen((jqueryElement) => {
-    expect(jqueryElement.length).to.equal(1, `acast-test-helpers#${functionName}(): Found more than one match for selector: '${selector}'`);
-    let event = createMouseEvent(eventName, options);
+    expect(jqueryElement.length).to.equal(1,
+      `acast-test-helpers#${functionName}(): Found more than one match for selector: '${selector}'`);
+
+    const evaluatedOptions = typeof options === 'function' ? options() : options;
+    const event = createMouseEvent(eventName, evaluatedOptions);
     jqueryElement[0].dispatchEvent(event);
   });
 }
