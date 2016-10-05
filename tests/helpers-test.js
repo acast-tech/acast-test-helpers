@@ -474,6 +474,22 @@ describe('Mouse Events', () => {
         });
         func('.element-to-interact-with', {clientX: 1337, clientY: 1338});
       });
+
+      it('evaluates options lazily if passed as function', (done) => {
+        let screenX = 42;
+
+        andThen(() => {
+          screenX = 1337;
+        });
+
+        func('.element-to-interact-with', () => ({screenX}));
+
+        const element = attachElementToBody();
+        $(element).on(eventName, e => {
+          expect(e.screenX).to.equal(1337);
+          done();
+        });
+      });
     });
   }
 });
