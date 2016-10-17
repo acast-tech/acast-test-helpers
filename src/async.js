@@ -8,7 +8,7 @@ function setupAsync() {
   });
 
   afterEach('check test promise for errors', function () {
-    const testTimeout = this.timeout();
+    const testTimeout = this.currentTest.timeout();
     this.timeout(0); // disable mocha timeout, since we're taking it over.
 
     return new Promise((resolve, reject) => {
