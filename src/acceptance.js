@@ -7,8 +7,7 @@ let history;
 function setupApp(createHistory, renderAppIntoElementWithHistory) {
   history = createHistory();
 
-  root = document.createElement('div');
-  document.body.appendChild(root);
+  root = createRootForTests();
 
   renderAppIntoElementWithHistory(root, history);
 }
@@ -18,6 +17,15 @@ function teardownApp() {
 
   history = null;
   root = null;
+}
+
+function createRootForTests() {
+  const root = document.createElement('div');
+  root.id = 'test-root';
+  root.style.width = root.style.height = '100%';
+  document.body.appendChild(root);
+
+  return root;
 }
 
 export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHistory) {
@@ -96,7 +104,7 @@ export function keyEventIn(selector, keyEventString, keyCode) {
 
 export function waitUntilExists(selector, errorMessage = `acast-test-helpers#waitUntilExists(): Selector never showed up: '${selector}'`) {
   waitUntil(() => {
-    const selected = $(selector);
+    const selected = $(selector, root);
     return selected.length ? selected : false;
   }, errorMessage);
 }
@@ -104,11 +112,11 @@ export function waitUntilExists(selector, errorMessage = `acast-test-helpers#wai
 export function waitUntilDisappears(selector) {
   waitUntilExists(selector, `acast-test-helpers#waitUntilDisappears(): Selector never showed up: '${selector}'`);
   waitUntil(() => {
-    return $(selector).length === 0;
+    return $(selector, root).length === 0;
   }, `acast-test-helpers#waitUntilDisappears(): Selector showed up but never disappeared: '${selector}'`);
 }
 
-export const find = $;
+export const find = (selector) => ($(selector, root));
 
 function createMouseEvent(type, {
   bubbles = true,
