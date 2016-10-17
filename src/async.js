@@ -64,6 +64,7 @@ function waitUntil(thisReturnsTruthy, errorMessage=`acast-test-helpers#waitUntil
 
 function waitMillis(milliseconds) {
   andThen(() => new Promise(resolve => {
+    testPromise.errorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
     setTimeout(resolve, milliseconds);
   }));
 }
