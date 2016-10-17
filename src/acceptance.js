@@ -4,6 +4,13 @@ import { setupAsync, andThen, waitUntil } from './async';
 let root;
 let history;
 
+export function setWindowWidthPercent(widthPercent) {
+  andThen(() => {
+    $(root).css('width', `${widthPercent}%`);
+    window.dispatchEvent(new Event('resize'));
+  });
+}
+
 function setupApp(createHistory, renderAppIntoElementWithHistory) {
   history = createHistory();
 
