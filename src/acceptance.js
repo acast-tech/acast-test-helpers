@@ -118,9 +118,13 @@ export function waitUntilExists(selector, errorMessage = `acast-test-helpers#wai
 
 export function waitUntilDisappears(selector) {
   waitUntilExists(selector, `acast-test-helpers#waitUntilDisappears(): Selector never showed up: '${selector}'`);
+  waitUntilDoesNotExist(selector, `acast-test-helpers#waitUntilDisappears(): Selector showed up but never disappeared: '${selector}'`);
+}
+
+export function waitUntilDoesNotExist(selector, errorMessage = `acast-test-helpers#waitUntilDoesNotExist(): Selector never stopped existing: '${selector}'`) {
   waitUntil(() => {
     return $(selector, root).length === 0;
-  }, `acast-test-helpers#waitUntilDisappears(): Selector showed up but never disappeared: '${selector}'`);
+  }, errorMessage);
 }
 
 export const find = (selector) => ($(selector, root));
