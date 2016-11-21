@@ -63,7 +63,7 @@ var fakehr = {
         return request;
       }
     }
-    ;
+    return null;
   }
 }
 
