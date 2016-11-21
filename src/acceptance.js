@@ -21,8 +21,10 @@ function setupApp(createHistory, renderAppIntoElementWithHistory) {
 
 function teardownApp(unrenderApp) {
   unrenderApp(root);
-  history = null;
+  document.body.removeChild(root);
   root = null;
+
+  history = null;
 }
 
 function createRootForTests() {
@@ -34,7 +36,7 @@ function createRootForTests() {
   return root;
 }
 
-export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHistory, unrenderAppFromElement = root => document.body.removeChild(root)) {
+export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHistory, unrenderAppFromElement = root => {}) {
   if (!createHistory || !renderAppIntoElementWithHistory) {
     throw new Error('acast-test-helpers#setupAndTeardownApp(): Requires two arguments: createHistory and renderAppIntoElementWithHistory');
   }
