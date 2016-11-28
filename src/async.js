@@ -57,7 +57,7 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve) {
 
 function waitUntil(thisReturnsTruthy, errorMessage=`acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
   andThen(() => new Promise((resolve) => {
-    testPromise.errorMessage = errorMessage;
+    testPromise.errorMessage = typeof errorMessage === 'function' ? errorMessage() : errorMessage;
     resolveWhenPredicateReturnsTruthy(thisReturnsTruthy, resolve);
   }));
 }

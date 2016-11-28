@@ -24,5 +24,21 @@ export function findXhr(method, url) {
 }
 
 export function waitUntilXhrExists(method, url) {
-  waitUntil(() => findXhr(method, url));
+  waitUntil(() => findXhr(method, url), () => createErrorMessageForXhr(method, url));
+}
+
+function createErrorMessageForXhr(method, url) {
+  const activeRequests = stubber.requests
+    .filter(request => (
+      request.readyState === 1
+    ));
+
+  const dedupedActiveRequestsMap = new Map();
+  activeRequests.forEach(request => {
+    dedupedActiveRequestsMap.set(`${request.method} ${request.url}`, request);
+  });
+
+  const activeRequestsInfo = Array.from(dedupedActiveRequestsMap.keys()).join('\n');
+
+  return `XHR not found: '${method} ${url}'. Active requests are:\n${activeRequestsInfo}`;
 }
