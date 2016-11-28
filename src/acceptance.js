@@ -4,9 +4,12 @@ import { setupAsync, andThen, waitUntil } from './async';
 let root;
 let history;
 
-export function setWindowWidthPercent(widthPercent) {
+export function scaleWindowWidth(scale) {
   andThen(() => {
-    $(root).css('width', `${widthPercent}%`);
+    var $root = $(root);
+    const currentWidth = $root.css('width');
+    const newWidth = currentWidth * scale;
+    $root.css('width', `${newWidth}px`);
     window.dispatchEvent(new Event('resize'));
   });
 }
@@ -30,7 +33,7 @@ function teardownApp(unrenderApp) {
 function createRootForTests() {
   const root = document.createElement('div');
   root.id = 'test-root';
-  root.style.width = root.style.height = '100%';
+  root.style.width = root.style.height = '1024px';
   document.body.appendChild(root);
 
   return root;
