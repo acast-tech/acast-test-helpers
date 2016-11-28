@@ -7,7 +7,7 @@ let history;
 export function scaleWindowWidth(scale) {
   andThen(() => {
     var $root = $(root);
-    const currentWidth = $root.css('width');
+    const currentWidth = $root.width();
     const newWidth = currentWidth * scale;
     $root.css('width', `${newWidth}px`);
     window.dispatchEvent(new Event('resize'));
