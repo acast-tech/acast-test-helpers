@@ -550,8 +550,7 @@ describe('fake xhr', () => {
       setTimeout(() => {
         sendRequest('POST', '/some/endpoint/path')
       }, 1000);
-    })
-    ;
+    });
   });
 });
 
