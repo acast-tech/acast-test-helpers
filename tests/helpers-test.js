@@ -420,12 +420,29 @@ describe('visit', () => {
 });
 
 describe('Mouse Events', () => {
-  describeMouseEventHelper(click, 'click');
+  describeMouseEventHelper(click, 'click', (attachElementToBody) => {
+    it('triggers mousedown and mouseup before click', () => {
+      const $element = $(attachElementToBody());
+      const mouseDownListener = sinon.spy();
+      const mouseUpListener = sinon.spy();
+      const clickListener = sinon.spy();
+
+      $element.on('mousedown', mouseDownListener);
+      $element.on('mouseup', mouseUpListener);
+      $element.on('click', clickListener);
+
+      click($element);
+
+      andThen(() => {
+        sinon.assert.callOrder(mouseDownListener, mouseUpListener, clickListener);
+      });
+    });
+  });
   describeMouseEventHelper(mouseDown, 'mousedown');
   describeMouseEventHelper(mouseUp, 'mouseup');
   describeMouseEventHelper(mouseMove, 'mousemove');
 
-  function describeMouseEventHelper(func, eventName) {
+  function describeMouseEventHelper(func, eventName, extraTests=()=>{}) {
     describe(func.name, () => {
       setupAsync();
 
@@ -491,6 +508,8 @@ describe('Mouse Events', () => {
           done();
         });
       });
+
+      extraTests(attachElementToBody);
     });
   }
 });
