@@ -65,7 +65,7 @@ export function visit(route) {
 }
 
 export function click(selector, options) {
-  triggerMouseEvent(click, selector, options);
+  triggerMouseEvent(click, selector, options, ['mousedown', 'mouseup']);
 }
 
 export function mouseDown(selector, options) {
@@ -80,7 +80,7 @@ export function mouseMove(selector, options) {
   triggerMouseEvent(mouseMove, selector, options);
 }
 
-function triggerMouseEvent(exportedFunction, selector, options) {
+function triggerMouseEvent(exportedFunction, selector, options, mouseEventsToTriggerFirst=[]) {
   const functionName = exportedFunction.name;
   const eventName = functionName.toLowerCase();
   waitUntilExists(selector, `acast-test-helpers#${functionName}(): Selector never showed up '${selector}'`);
@@ -89,8 +89,17 @@ function triggerMouseEvent(exportedFunction, selector, options) {
       `acast-test-helpers#${functionName}(): Found more than one match for selector: '${selector}'`);
 
     const evaluatedOptions = typeof options === 'function' ? options() : options;
-    const event = createMouseEvent(eventName, evaluatedOptions);
-    jqueryElement[0].dispatchEvent(event);
+
+    function triggerMouseEvent(eventName) {
+      const event = createMouseEvent(eventName, evaluatedOptions);
+      jqueryElement[0].dispatchEvent(event);
+    }
+
+    const mouseEventsToTrigger = mouseEventsToTriggerFirst.concat([eventName]);
+
+    mouseEventsToTrigger.forEach(eventName => {
+      triggerMouseEvent(eventName);
+    });
   });
 }
 
