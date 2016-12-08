@@ -142,6 +142,8 @@ export function waitUntilDoesNotExist(selector, errorMessage = `acast-test-helpe
 
 export const find = (selector) => ($(selector, root));
 
+export const jQuery = $;
+
 function createMouseEvent(type, {
   bubbles = true,
   cancelable = (type != "mousemove"),
