@@ -13,7 +13,8 @@ function setupAsync() {
 
     return new Promise((resolve, reject) => {
       const timeoutHandle = setTimeout(() => {
-        reject(new Error(testPromise.errorMessage));
+        const errorMessage = getErrorMessage();
+        reject(new Error(errorMessage));
       }, testTimeout);
 
       testPromise
@@ -33,6 +34,13 @@ function setupAsync() {
       };
     });
   });
+}
+
+function getErrorMessage() {
+  if (typeof testPromise.errorMessage === 'function') {
+    return testPromise.errorMessage();
+  }
+  return testPromise.errorMessage;
 }
 
 function andThen(doThis) {
@@ -57,7 +65,7 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve) {
 
 function waitUntil(thisReturnsTruthy, errorMessage=`acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
   andThen(() => new Promise((resolve) => {
-    testPromise.errorMessage = typeof errorMessage === 'function' ? errorMessage() : errorMessage;
+    testPromise.errorMessage = errorMessage;
     resolveWhenPredicateReturnsTruthy(thisReturnsTruthy, resolve);
   }));
 }
