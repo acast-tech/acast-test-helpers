@@ -110,6 +110,7 @@ export function fillIn(selector, value) {
     const target = jqueryElement[0];
     target.value = value;
     target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.dispatchEvent(new Event('change', { bubbles: true }));
   });
 }
 
