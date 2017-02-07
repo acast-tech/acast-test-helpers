@@ -68,6 +68,18 @@ describe('waitUntil', () => {
     });
   });
 
+  it('passes along the previously resolved value to the predicate', () => {
+    andThen(() => {
+      return 'the resolved value';
+    });
+    waitUntil(theResolvedValue => {
+      return theResolvedValue;
+    });
+    andThen(theResolvedValue => {
+      expect(theResolvedValue).to.equal('the resolved value');
+    })
+  });
+
   it('polls at every hundred milliseconds', (done) => {
     let value = false;
     let didComplete = false;
