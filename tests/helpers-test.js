@@ -50,6 +50,23 @@ describe('waitUntil', () => {
     });
   });
 
+  it('handles exceptions, silently treating them as falsy return values', () => {
+    let value = false;
+
+    setTimeout(() => {
+      value = true;
+    }, 200);
+
+    waitUntil(() => {
+      expect(value).to.be.true();
+      return value;
+    });
+
+    andThen(chainedValue => {
+      expect(chainedValue).to.be.true();
+    });
+  });
+
   it('resolves when predicate returns truthy string', () => {
     let value = false;
 

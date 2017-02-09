@@ -52,7 +52,13 @@ function andThen(doThis) {
 }
 
 function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
-  const returnValue = predicate(chainedValue);
+  let returnValue;
+  try {
+    returnValue = predicate(chainedValue);
+  }
+  catch (e) {
+    returnValue = false;
+  }
   if (!!returnValue) {
     resolve(returnValue);
   }
@@ -63,7 +69,7 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
   }
 }
 
-function waitUntil(thisReturnsTruthy, errorMessage=`acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
+function waitUntil(thisReturnsTruthy, errorMessage = `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
   andThen(chainedValue => new Promise((resolve) => {
     testPromise.errorMessage = errorMessage;
     resolveWhenPredicateReturnsTruthy(thisReturnsTruthy, resolve, chainedValue);
