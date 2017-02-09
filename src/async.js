@@ -14,6 +14,7 @@ function setupAsync() {
     return new Promise((resolve, reject) => {
       const timeoutHandle = setTimeout(() => {
         const errorMessage = getErrorMessage();
+        cleanUp();
         reject(new Error(errorMessage));
       }, testTimeout);
 
@@ -28,6 +29,7 @@ function setupAsync() {
         });
 
       const cleanUp = () => {
+        clearTimeout(testPromise.timeoutHandle);
         testPromise = null;
         clearTimeout(timeoutHandle);
         this.timeout(testTimeout);
@@ -63,7 +65,7 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
     resolve(returnValue);
   }
   else {
-    setTimeout(() => {
+    testPromise.timeoutHandle = setTimeout(() => {
       resolveWhenPredicateReturnsTruthy(predicate, resolve);
     }, POLL_INTERVAL_MILLISECONDS);
   }

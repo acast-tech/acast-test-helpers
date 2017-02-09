@@ -50,6 +50,12 @@ describe('waitUntil', () => {
     });
   });
 
+  it.skip('shuts down predicate after timeout', () => {
+    waitUntil(() => {
+      console.log('this should stop logging after test times out');
+    });
+  });
+
   it('handles exceptions, silently treating them as falsy return values', () => {
     let value = false;
 
