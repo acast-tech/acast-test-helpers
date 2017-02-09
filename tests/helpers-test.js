@@ -73,6 +73,16 @@ describe('waitUntil', () => {
     });
   });
 
+  it('can be used solely to wait for an expectation to be true', () => {
+    let fruit = 'apple';
+
+    setTimeout(() => {
+      fruit = 'banana';
+    }, 200);
+
+    waitUntil(() => expect(fruit).to.equal('banana'));
+  });
+
   it('resolves when predicate returns truthy string', () => {
     let value = false;
 
