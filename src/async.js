@@ -59,6 +59,7 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
     returnValue = predicate(chainedValue);
   }
   catch (e) {
+    testPromise.errorMessage = `acast-test-helpers#waitUntil() timed out. This is the last exception that was caught: ${e.message}`;
     returnValue = false;
   }
   if (!!returnValue) {
