@@ -66,7 +66,7 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
   }
   else {
     testPromise.timeoutHandle = setTimeout(() => {
-      resolveWhenPredicateReturnsTruthy(predicate, resolve);
+      resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue);
     }, POLL_INTERVAL_MILLISECONDS);
   }
 }

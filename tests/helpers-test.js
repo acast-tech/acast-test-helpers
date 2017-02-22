@@ -113,6 +113,20 @@ describe('waitUntil', () => {
     })
   });
 
+  it('passes along the previously resolved value to each iteration of the predicate', () => {
+    const obj = { value: false };
+
+    setTimeout(() => {
+      obj.value = true;
+    }, 200);
+
+    andThen(() => {
+      return obj;
+    });
+
+    waitUntil(theResolvedObject => expect(theResolvedObject.value).to.be.true());
+  });
+
   it('polls at every hundred milliseconds', (done) => {
     let value = false;
     let didComplete = false;
