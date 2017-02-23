@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { setupAsync, andThen, waitUntil, waitMillis } from '../src/async';
+import { setupAsync, andThen, waitUntil, waitMillis, waitUntilChange } from '../src/async';
 import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click, mouseDown, mouseUp, mouseMove, scaleWindowWidth } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 import { startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../src/xhr';
@@ -475,6 +475,21 @@ describe('visit', () => {
         visit('/some/path');
       }).to.not.throw();
     });
+  });
+});
+
+describe('waitUntilChange', () => {
+  setupAsync();
+  it('moves on when the predicate returns a different value than the first call', () => {
+    let value = 4;
+
+    setTimeout(() => {
+      value = 0;
+    }, 10);
+
+    waitUntilChange(() => value);
+
+    andThen(resolvedValue => expect(resolvedValue).to.equal(0));
   });
 });
 

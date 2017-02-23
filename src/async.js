@@ -86,4 +86,20 @@ function waitMillis(milliseconds) {
   }));
 }
 
-export { setupAsync, andThen, waitUntil, waitMillis };
+function waitUntilChange(predicate, errorMessage = `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}`) {
+  let initialValue;
+  let newValue;
+
+  andThen(() => {
+    initialValue = predicate();
+  });
+
+  waitUntil(() => {
+    newValue = predicate();
+    return newValue !== initialValue;
+  }, errorMessage);
+
+  andThen(() => newValue);
+}
+
+export { setupAsync, andThen, waitUntil, waitMillis, waitUntilChange };
