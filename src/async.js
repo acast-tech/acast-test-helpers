@@ -90,12 +90,13 @@ function waitUntilChange(predicate, errorMessage = `acast-test-helpers#waitUntil
   let initialValue;
   let newValue;
 
-  andThen(() => {
-    initialValue = predicate();
+  andThen(chainedValue => {
+    initialValue = predicate(chainedValue);
+    return chainedValue;
   });
 
-  waitUntil(() => {
-    newValue = predicate();
+  waitUntil(chainedValue => {
+    newValue = predicate(chainedValue);
     return newValue !== initialValue;
   }, errorMessage);
 

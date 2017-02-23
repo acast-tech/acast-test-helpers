@@ -1,6 +1,16 @@
 import $ from 'jquery';
 import { setupAsync, andThen, waitUntil, waitMillis, waitUntilChange } from '../src/async';
-import { waitUntilExists, waitUntilDisappears, visit, setupAndTeardownApp, click, mouseDown, mouseUp, mouseMove, scaleWindowWidth } from '../src/acceptance';
+import {
+  waitUntilExists,
+  waitUntilDisappears,
+  visit,
+  setupAndTeardownApp,
+  click,
+  mouseDown,
+  mouseUp,
+  mouseMove,
+  scaleWindowWidth
+} from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
 import { startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../src/xhr';
 
@@ -466,8 +476,12 @@ describe('visit', () => {
   });
 
   describe('when setupAndTeardownApp has been called', () => {
-    const createHistory = () => ({push: () => {}});
-    const renderAppWithHistoryIntoElement = (history, element) => {};
+    const createHistory = () => ({
+      push: () => {
+      }
+    });
+    const renderAppWithHistoryIntoElement = (history, element) => {
+    };
     setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement);
 
     it('does not throw', () => {
@@ -488,6 +502,20 @@ describe('waitUntilChange', () => {
     }, 10);
 
     waitUntilChange(() => value);
+
+    andThen(resolvedValue => expect(resolvedValue).to.equal(0));
+  });
+
+  it('passes the chained value to predicate', () => {
+    const obj = { value: 4 };
+
+    setTimeout(() => {
+      obj.value = 0;
+    }, 10);
+
+    waitUntil(() => obj);
+
+    waitUntilChange(chained => chained.value);
 
     andThen(resolvedValue => expect(resolvedValue).to.equal(0));
   });
@@ -516,7 +544,8 @@ describe('Mouse Events', () => {
   describeMouseEventHelper(mouseUp, 'mouseup');
   describeMouseEventHelper(mouseMove, 'mousemove');
 
-  function describeMouseEventHelper(func, eventName, extraTests=()=>{}) {
+  function describeMouseEventHelper(func, eventName, extraTests = ()=> {
+  }) {
     describe(func.name, () => {
       setupAsync();
 
@@ -564,7 +593,7 @@ describe('Mouse Events', () => {
           expect(e.clientY).to.equal(1338);
           done();
         });
-        func('.element-to-interact-with', {clientX: 1337, clientY: 1338});
+        func('.element-to-interact-with', { clientX: 1337, clientY: 1338 });
       });
 
       it('evaluates options lazily if passed as function', (done) => {
@@ -574,7 +603,7 @@ describe('Mouse Events', () => {
           screenX = 1337;
         });
 
-        func('.element-to-interact-with', () => ({screenX}));
+        func('.element-to-interact-with', () => ({ screenX }));
 
         const element = attachElementToBody();
         $(element).on(eventName, e => {
@@ -631,7 +660,7 @@ describe('fake xhr', () => {
 
   describe('waitUntilXhrExists', () => {
     setupAsync();
-    
+
     it('resolves when the request is found', () => {
       startFakingXhr();
       waitUntilXhrExists('POST', '/some/endpoint/path');
@@ -648,8 +677,12 @@ describe('fake xhr', () => {
 });
 
 describe('test div dimensions', () => {
-  const createHistory = () => ({push: () => {}});
-  const renderAppWithHistoryIntoElement = (history, element) => {};
+  const createHistory = () => ({
+    push: () => {
+    }
+  });
+  const renderAppWithHistoryIntoElement = (history, element) => {
+  };
   setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement);
 
   it('starts at 1024 x 1024', () => {
