@@ -4,10 +4,17 @@ const POLL_INTERVAL_MILLISECONDS = 100;
 
 function setupAsync() {
   beforeEach('create test promise', () => {
+    if (testPromise) {
+      return;
+    }
     testPromise = Promise.resolve();
   });
 
   afterEach('check test promise for errors', function () {
+    if (!testPromise) {
+      return;
+    }
+
     const testTimeout = this.currentTest.timeout();
     this.timeout(0); // disable mocha timeout, since we're taking it over.
 
