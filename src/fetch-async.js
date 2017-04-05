@@ -1,5 +1,5 @@
 import { setupAsync, waitUntil } from './async';
-import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
+import { setupFakeFetch, teardownFakeFetch, fetchRespond } from './fetch';
 
 export function setupFakeFetchAsync() {
   setupAsync();
