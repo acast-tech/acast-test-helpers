@@ -12,6 +12,7 @@ import {
   scaleWindowWidth
 } from '../src/acceptance';
 import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../src/fetch';
+import { setupFakeFetchAsync, waitUntilFetchExists } from '../src/fetch-async';
 import { startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../src/xhr';
 
 describe('andThen', () => {
@@ -461,6 +462,22 @@ describe('fake fetch', () => {
           expect(secondCallback).to.have.been.calledAfter(firstCallback);
         }).then(done).catch(done);
       });
+    });
+  });
+});
+
+describe('fake fetch async', () => {
+  setupFakeFetchAsync();
+
+  it('resolves with the promise-looking object', () => {
+    waitUntilFetchExists('/some/path');
+
+    andThen(fetchRequest => {
+      fetchRequest.resolveWith({someKey: 'someValue'});
+    });
+
+    return fetch('/some/path').then(response => {
+      expect(response.json()).to.deep.equal({someKey: 'someValue'});
     });
   });
 });
