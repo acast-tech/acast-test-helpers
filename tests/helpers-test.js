@@ -467,6 +467,7 @@ describe('fake fetch', () => {
 });
 
 describe('fake fetch async', () => {
+  setupAsync();
   setupFakeFetchAsync();
 
   it('resolves with the promise-looking object', () => {
