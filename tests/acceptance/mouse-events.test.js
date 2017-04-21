@@ -1,11 +1,12 @@
-import { setupAsync, andThen } from '../../src/async';
 import {
   click,
   mouseDown,
   mouseUp,
   mouseMove,
-} from '../../src/acceptance';
-import $ from 'jquery';
+  setupAsync,
+  andThen,
+  jQuery as $
+} from '../../src';
 
 describe('Mouse Events', () => {
   describeMouseEventHelper(click, 'click', (attachElementToBody) => {

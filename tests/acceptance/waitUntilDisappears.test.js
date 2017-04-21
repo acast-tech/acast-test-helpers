@@ -1,5 +1,4 @@
-import { setupAsync, andThen } from '../../src/async';
-import { waitUntilDisappears } from '../../src/acceptance';
+import { setupAsync, andThen, waitUntilDisappears } from '../../src';
 
 describe('waitUntilDisappears', () => {
   setupAsync();

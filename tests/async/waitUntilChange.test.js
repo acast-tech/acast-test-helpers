@@ -1,4 +1,4 @@
-import { setupAsync, waitUntil, waitUntilChange, andThen } from '../../src/async';
+import { setupAsync, waitUntil, waitUntilChange, andThen } from '../../src';
 
 describe('waitUntilChange', () => {
   setupAsync();

@@ -1,4 +1,4 @@
-import { setupAsync, andThen } from '../../src/async';
+import { setupAsync, andThen } from '../../src';
 
 describe('andThen', () => {
   describe('without having called setupAsync()', () => {

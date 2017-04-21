@@ -1,9 +1,9 @@
-import $ from 'jquery';
-import { andThen } from '../../src/async';
 import {
   setupAndTeardownApp,
-  scaleWindowWidth
-} from '../../src/acceptance';
+  scaleWindowWidth,
+  andThen,
+  jQuery as $,
+} from '../../src';
 
 describe('test div dimensions', () => {
   const createHistory = () => ({
