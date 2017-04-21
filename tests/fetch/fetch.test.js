@@ -1,4 +1,4 @@
-import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../../src/fetch';
+import { setupFakeFetch, teardownFakeFetch, fetchRespond } from '../../src';
 
 describe('fake fetch', () => {
   mocha.setup({ globals: ['fetch'] });
