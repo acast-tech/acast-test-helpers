@@ -1,4 +1,4 @@
-import { setupAsync, visit, setupAndTeardownApp } from '../../src';
+import { setupAsync, visit, andThen, setupAndTeardownApp } from '../../src';
 
 describe('visit', () => {
   describe('when setupAndTeardownApp has not been called', () => {
@@ -11,9 +11,9 @@ describe('visit', () => {
   });
 
   describe('when setupAndTeardownApp has been called', () => {
+    const pushSpy = sinon.spy();
     const createHistory = () => ({
-      push: () => {
-      }
+      push: pushSpy
     });
     const renderAppWithHistoryIntoElement = (history, element) => {};
     setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement);
@@ -23,5 +23,10 @@ describe('visit', () => {
         visit('/some/path');
       }).to.not.throw();
     });
+
+    it('pushes path to history', () => {
+      visit('/this/path');
+      andThen(() => expect(pushSpy).to.have.been.calledWith('/this/path'));
+    })
   });
 });
