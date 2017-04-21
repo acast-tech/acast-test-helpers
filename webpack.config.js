@@ -2,7 +2,7 @@ const glob = require('glob');
 
 module.exports = {
   entry: {
-    tests : glob.sync('./tests/**/*-test.js')
+    tests : glob.sync('./tests/**/*test.js')
   },
 
   output: {
