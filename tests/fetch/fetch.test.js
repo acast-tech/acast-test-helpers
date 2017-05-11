@@ -63,6 +63,45 @@ describe('fake fetch', () => {
     });
 
     describe('fetchRespond', () => {
+      it('takes status code as first argument', (done) => {
+        fetch('/some/endpoint').then(response => {
+          expect(response.status).to.equal(404);
+        }).then(done, done);
+
+        fetchRespond('/some/endpoint').resolveWith(404);
+      });
+
+      it('throws if status is not a number', () => {
+        fetch('/some/endpoint');
+        expect(() => {
+          fetchRespond('/some/endpoint').resolveWith('200');
+        }).to.throw('First argument to `resolveWith` must be a number representing the response status.');
+      });
+
+      it('sets matching statusText for status code', (done) => {
+        fetch('/some/endpoint').then(response => {
+          expect(response.statusText).to.equal('Not Found');
+        }).then(done, done);
+
+        fetchRespond('/some/endpoint').resolveWith(404);
+      });
+
+      it('sets response.ok to false if status not 2xx', (done) => {
+        fetch('/some/endpoint').then(response => {
+          expect(response.ok).to.equal(false);
+        }).then(done, done);
+
+        fetchRespond('/some/endpoint').resolveWith(404);
+      });
+
+      it('sets response.ok to true if status is 2xx', (done) => {
+        fetch('/some/endpoint').then(response => {
+          expect(response.ok).to.equal(true);
+        }).then(done, done);
+
+        fetchRespond('/some/endpoint').resolveWith(201);
+      });
+
       it('can reply to fetch with json', (done) => {
         const callback = sinon.spy();
         fetch('/api/foobar')
@@ -70,9 +109,9 @@ describe('fake fetch', () => {
           .then(callback).then(() => {
           expect(callback).to.have.been.calledOnce().and.to.have.been.calledWith({ foo: 'bar' });
         })
-          .then(done);
+          .then(done, done);
 
-        fetchRespond('/api/foobar').resolveWith({ foo: 'bar' });
+        fetchRespond('/api/foobar').resolveWith(200, { foo: 'bar' });
       });
 
       it('returns promise from json function', (done) => {
@@ -84,7 +123,7 @@ describe('fake fetch', () => {
         fetch('/api/foobar')
           .then(response => response.json().then(verifyJson))
 
-        fetchRespond('/api/foobar').resolveWith({ what: 'ever' });
+        fetchRespond('/api/foobar').resolveWith(200, { what: 'ever' });
       });
 
       it('leaves other promises untouched when resolving fetch with json', (done) => {
@@ -97,7 +136,7 @@ describe('fake fetch', () => {
           done();
         });
 
-        fetchRespond('/api/foobar').resolveWith({ foo: 'bar' });
+        fetchRespond('/api/foobar').resolveWith(200, { foo: 'bar' });
       });
 
       it('can resolve other promise than the last one', (done) => {
@@ -108,7 +147,7 @@ describe('fake fetch', () => {
 
         fetch('/second/path').then(secondCallback).then(() => done('Error: this should not be called'));
 
-        fetchRespond('/firstPath').resolveWith({ foo: 'bar' });
+        fetchRespond('/firstPath').resolveWith(200, { foo: 'bar' });
       });
 
       it('can reply to fetch with other json', (done) => {
@@ -121,7 +160,7 @@ describe('fake fetch', () => {
         })
           .then(done);
 
-        fetchRespond('/somepath').resolveWith('some response');
+        fetchRespond('/somepath').resolveWith(200, 'some response');
       });
 
       it('can reject fetch with error', (done) => {
@@ -193,8 +232,8 @@ describe('fake fetch', () => {
         fetch('/same/path').then(response => response.json().then(secondCallback));
 
         Promise.all([
-          fetchRespond('/same/path').resolveWith({ order: 'first' }),
-          fetchRespond('/same/path').resolveWith({ order: 'second' })]
+          fetchRespond('/same/path').resolveWith(200, { order: 'first' }),
+          fetchRespond('/same/path').resolveWith(200, { order: 'second' })]
         ).then(() => {
           expect(firstCallback).to.have.been.calledOnce().and.to.have.been.calledWith({ order: 'first' });
           expect(secondCallback).to.have.been.calledOnce().and.to.have.been.calledWith({ order: 'second' });

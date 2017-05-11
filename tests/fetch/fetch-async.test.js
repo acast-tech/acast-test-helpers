@@ -8,7 +8,7 @@ describe('fake fetch async', () => {
     waitUntilFetchExists('/some/path');
 
     andThen(fetchRequest => {
-      fetchRequest.resolveWith({someKey: 'someValue'});
+      fetchRequest.resolveWith(200, {someKey: 'someValue'});
     });
 
     return fetch('/some/path').then(response => response.json().then(json => {
