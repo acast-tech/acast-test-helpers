@@ -11,8 +11,8 @@ describe('fake fetch async', () => {
       fetchRequest.resolveWith({someKey: 'someValue'});
     });
 
-    return fetch('/some/path').then(response => {
-      expect(response.json()).to.deep.equal({someKey: 'someValue'});
-    });
+    return fetch('/some/path').then(response => response.json().then(json => {
+      expect(json).to.deep.equal({someKey: 'someValue'});
+    }));
   });
 });
