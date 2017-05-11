@@ -83,7 +83,7 @@ export function fetchRespond(path) {
     resolveWith: (returnValue) => {
       resolve({
         json() {
-          return returnValue;
+          return Promise.resolve(returnValue);
         },
       });
       return promise.then().then();

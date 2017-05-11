@@ -75,22 +75,16 @@ describe('fake fetch', () => {
         fetchRespond('/api/foobar').resolveWith({ foo: 'bar' });
       });
 
-      it('returns a promise that can be used for testing chains', (done) => {
-        const callback = sinon.spy();
-        fetch('path').then(response => response.json()).then(callback);
+      it('returns promise from json function', (done) => {
+        const verifyJson = json => {
+          expect(json).to.deep.equal({ what: 'ever' });
+          done();
+        };
 
-        fetchRespond('path').resolveWith({ key: 'value' }).then(() => {
-          expect(callback).to.have.been.calledWith({ key: 'value' });
-        }).then(done).catch(done);
-      });
+        fetch('/api/foobar')
+          .then(response => response.json().then(verifyJson))
 
-      it('returns a promise that can be used for testing longer chains', (done) => {
-        const callback = sinon.spy();
-        fetch('path').then(response => response.json()).then(json => json.key).then(callback);
-
-        fetchRespond('path').resolveWith({ key: 'value' }).then(() => {
-          expect(callback).to.have.been.calledWith('value');
-        }).then(done).catch(done);
+        fetchRespond('/api/foobar').resolveWith({ what: 'ever' });
       });
 
       it('leaves other promises untouched when resolving fetch with json', (done) => {
@@ -195,8 +189,8 @@ describe('fake fetch', () => {
         const firstCallback = sinon.spy();
         const secondCallback = sinon.spy();
 
-        fetch('/same/path').then(response => firstCallback(response.json()));
-        fetch('/same/path').then(response => secondCallback(response.json()));
+        fetch('/same/path').then(response => response.json().then(firstCallback));
+        fetch('/same/path').then(response => response.json().then(secondCallback));
 
         Promise.all([
           fetchRespond('/same/path').resolveWith({ order: 'first' }),
