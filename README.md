@@ -71,6 +71,3 @@ this: https://github.com/acastSthlm/test-setup-and-examples/blob/master/.npmrc
 
 Then simply:
 `npm install --save-dev --save-exact acast-test-helpers`
-
-## Usage 
-Find examples over at https://github.com/acastSthlm/test-setup-and-examples, or look at the tests!
