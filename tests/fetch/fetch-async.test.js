@@ -1,7 +1,6 @@
-import { setupAsync, andThen, setupFakeFetchAsync, waitUntilFetchExists } from '../../src';
+import { andThen, setupFakeFetchAsync, waitUntilFetchExists } from '../../src';
 
 describe('fake fetch async', () => {
-  setupAsync();
   setupFakeFetchAsync();
 
   it('resolves with the promise-looking object', () => {
