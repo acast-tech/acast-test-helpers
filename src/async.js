@@ -2,7 +2,7 @@ let testPromise = null;
 
 const POLL_INTERVAL_MILLISECONDS = 100;
 
-function setupAsync() {
+export function setupAsync() {
   beforeEach('create test promise', () => {
     if (testPromise) {
       return;
@@ -52,7 +52,7 @@ function getErrorMessage() {
   return testPromise.errorMessage;
 }
 
-function andThen(doThis) {
+export function andThen(doThis) {
   if (!testPromise) {
     throw new Error('acast-test-helpers#andThen(): You cannot use andThen() unless you call setupAsync() at the root of the appropriate describe()!');
   }
@@ -79,21 +79,21 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
   }
 }
 
-function waitUntil(thisReturnsTruthy, errorMessage = `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
+export function waitUntil(thisReturnsTruthy, errorMessage = `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
   andThen(chainedValue => new Promise((resolve) => {
     testPromise.errorMessage = errorMessage;
     resolveWhenPredicateReturnsTruthy(thisReturnsTruthy, resolve, chainedValue);
   }));
 }
 
-function waitMillis(milliseconds) {
+export function waitMillis(milliseconds) {
   andThen(() => new Promise(resolve => {
     testPromise.errorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
     setTimeout(resolve, milliseconds);
   }));
 }
 
-function waitUntilChange(predicate, errorMessage = `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}`) {
+export function waitUntilChange(predicate, errorMessage = `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}`) {
   let initialValue;
   let newValue;
 
@@ -109,5 +109,3 @@ function waitUntilChange(predicate, errorMessage = `acast-test-helpers#waitUntil
 
   andThen(() => newValue);
 }
-
-export { setupAsync, andThen, waitUntil, waitMillis, waitUntilChange };
