@@ -6,13 +6,7 @@ import {
 } from '../../src';
 
 describe('test div dimensions', () => {
-  const createHistory = () => ({
-    push: () => {
-    }
-  });
-  const renderAppWithHistoryIntoElement = (history, element) => {
-  };
-  setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement);
+  setupAndTeardownApp(_ => {});
 
   it('starts at 1024 x 1024', () => {
     assertTestRootWidthAndHeight(1024, 1024);

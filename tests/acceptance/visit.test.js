@@ -6,7 +6,7 @@ describe('visit', () => {
     it('throws', () => {
       expect(() => {
         visit('/some/path');
-      }).to.throw('You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!')
+      }).to.throw('acast-test-helpers#visit(): You cannot use visit() unless you pass a valid createHistory function to setupAndTeardownApp() at the root of the appropriate describe()!');
     });
   });
 
@@ -15,8 +15,7 @@ describe('visit', () => {
     const createHistory = () => ({
       push: pushSpy
     });
-    const renderAppWithHistoryIntoElement = (history, element) => {};
-    setupAndTeardownApp(createHistory, renderAppWithHistoryIntoElement);
+    setupAndTeardownApp(_ => {}, createHistory);
 
     it('does not throw', () => {
       expect(() => {

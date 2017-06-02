@@ -39,9 +39,9 @@ function createRootForTests() {
   return root;
 }
 
-export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHistory, unrenderAppFromElement = root => {}) {
-  if (!createHistory || !renderAppIntoElementWithHistory) {
-    throw new Error('acast-test-helpers#setupAndTeardownApp(): Requires two arguments: createHistory and renderAppIntoElementWithHistory');
+export function setupAndTeardownApp(renderAppIntoElementWithHistory, createHistory = () => {}, unrenderAppFromElement = root => {}) {
+  if (!renderAppIntoElementWithHistory) {
+    throw new Error('acast-test-helpers#setupAndTeardownApp(): Requires at least one argument: renderAppIntoElementWithHistory');
   }
 
   if (renderAppIntoElementWithHistory.length < 1) {
@@ -57,7 +57,7 @@ export function setupAndTeardownApp(createHistory, renderAppIntoElementWithHisto
 
 export function visit(route) {
   if (!history) {
-    throw new Error('acast-test-helpers#visit(): You cannot use visit() unless you call setupAndTeardownApp() at the root of the appropriate describe()!');
+    throw new Error('acast-test-helpers#visit(): You cannot use visit() unless you pass a valid createHistory function to setupAndTeardownApp() at the root of the appropriate describe()!');
   }
   andThen(() => {
     history.push(route);
