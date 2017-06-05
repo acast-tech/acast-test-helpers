@@ -4,6 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "pretest": "npm run lint",
+    "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'",
     "test": "webpack && testem ci -f ./testem/testem.js",
     "test:dev": "webpack && testem run -f ./testem/testem-dev.js",
     "build": "npm run build:production",
@@ -30,6 +32,7 @@
     "dirty-chai": "1.2.2",
     "glob": "7.0.5",
     "phantomjs": "2.1.7",
+    "prettier": "1.4.2",
     "sinon": "1.17.4",
     "sinon-chai": "2.8.0",
     "testem": "1.7.0",

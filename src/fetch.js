@@ -2,7 +2,7 @@ let originalFetch;
 let pathToPromisesMap;
 
 function createFakeFetch() {
-  return sinon.spy((path) => {
+  return sinon.spy(path => {
     let resolve;
     let reject;
 
@@ -72,7 +72,6 @@ export function teardownFakeFetch() {
   pathToPromisesMap = null;
 }
 
-
 export function fetchRespond(path) {
   throwIfNotSetUp();
   throwIfPathIsNotAwaitingResolution(path);
@@ -82,24 +81,25 @@ export function fetchRespond(path) {
   return {
     resolveWith: (status, returnValue) => {
       if (typeof status !== 'number') {
-        throw new Error('First argument to `resolveWith` must be a number representing the response status.');
+        throw new Error(
+          'First argument to `resolveWith` must be a number representing the response status.'
+        );
       }
 
       resolve({
         status,
         statusText: statusToTextMap[status],
-        ok: (status >= 200 && status <=299),
+        ok: status >= 200 && status <= 299,
         json() {
           return Promise.resolve(returnValue);
         },
       });
     },
-    rejectWith: (error) => {
+    rejectWith: error => {
       reject(error);
     },
   };
 }
-
 
 const statusToTextMap = {
   '100': 'Continue',
@@ -141,7 +141,7 @@ const statusToTextMap = {
   '415': 'Unsupported Media Type',
   '416': 'Range Not Satisfiable',
   '417': 'Expectation Failed',
-  '418': 'I\'m a teapot',
+  '418': "I'm a teapot",
   '421': 'Misdirected Request',
   '422': 'Unprocessable Entity',
   '423': 'Locked',
@@ -163,5 +163,5 @@ const statusToTextMap = {
   '508': 'Loop Detected',
   '509': 'Bandwidth Limit Exceeded',
   '510': 'Not Extended',
-  '511': 'Network Authentication Required'
+  '511': 'Network Authentication Required',
 };

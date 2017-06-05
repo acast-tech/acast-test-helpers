@@ -30,10 +30,12 @@ function FakeRequest() {
   FakeXMLHttpRequest.call(this);
   fakehr.addRequest(this);
 
-  this.respondWithJson = (statusCode, payload) => (
-    this.respond(statusCode, { 'Content-Type': 'application/json' }, JSON.stringify(payload))
-  );
-
+  this.respondWithJson = (statusCode, payload) =>
+    this.respond(
+      statusCode,
+      { 'Content-Type': 'application/json' },
+      JSON.stringify(payload)
+    );
 }
 FakeRequest.prototype = FakeXMLHttpRequest.prototype;
 
@@ -42,17 +44,17 @@ FakeRequest.prototype = FakeXMLHttpRequest.prototype;
 var nativeRequest = window.XMLHttpRequest;
 
 var fakehr = {
-  addRequest: function (r) {
+  addRequest: function(r) {
     this.requests.push(r);
   },
-  start: function () {
+  start: function() {
     this.requests = this.requests || [];
     window.XMLHttpRequest = FakeRequest;
   },
-  stop: function () {
+  stop: function() {
     window.XMLHttpRequest = nativeRequest;
   },
-  clear: function () {
+  clear: function() {
     var requests = this.requests;
     // removes the objects from the original array
     // just in case someone is referencing it.
@@ -61,7 +63,7 @@ var fakehr = {
       requests.pop();
     }
   },
-  reset: function () {
+  reset: function() {
     this.stop();
     this.clear();
   },
@@ -74,7 +76,7 @@ var fakehr = {
    * @param readyState
    * @returns {Object} the matched request if found or undefined.
    */
-  match: function (method, url, requestBody, readyState) {
+  match: function(method, url, requestBody, readyState) {
     if (readyState === undefined) {
       readyState = 1;
     }
@@ -82,13 +84,17 @@ var fakehr = {
     var requests = this.requests;
     for (var i = requests.length - 1; i >= 0; i--) {
       var request = requests[i];
-      if (request.method.toLowerCase() === method.toLowerCase() && request.url === url && request.readyState === readyState &&
-        (!requestBody || request.requestBody === requestBody)) {
+      if (
+        request.method.toLowerCase() === method.toLowerCase() &&
+        request.url === url &&
+        request.readyState === readyState &&
+        (!requestBody || request.requestBody === requestBody)
+      ) {
         return request;
       }
     }
     return null;
-  }
-}
+  },
+};
 
 export default fakehr;

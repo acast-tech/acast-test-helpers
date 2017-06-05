@@ -10,7 +10,7 @@ export function setupAsync() {
     testPromise = Promise.resolve();
   });
 
-  afterEach('check test promise for errors', function () {
+  afterEach('check test promise for errors', function() {
     if (!testPromise) {
       return;
     }
@@ -54,7 +54,9 @@ function getErrorMessage() {
 
 export function andThen(doThis) {
   if (!testPromise) {
-    throw new Error('acast-test-helpers#andThen(): You cannot use andThen() unless you call setupAsync() at the root of the appropriate describe()!');
+    throw new Error(
+      'acast-test-helpers#andThen(): You cannot use andThen() unless you call setupAsync() at the root of the appropriate describe()!'
+    );
   }
 
   testPromise = testPromise.then(doThis);
@@ -64,36 +66,50 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
   let returnValue;
   try {
     returnValue = predicate(chainedValue);
-  }
-  catch (e) {
+  } catch (e) {
     testPromise.errorMessage = `acast-test-helpers#waitUntil() timed out. This is the last exception that was caught: ${e.message}`;
     returnValue = false;
   }
   if (!!returnValue) {
     resolve(returnValue);
-  }
-  else {
+  } else {
     testPromise.timeoutHandle = setTimeout(() => {
       resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue);
     }, POLL_INTERVAL_MILLISECONDS);
   }
 }
 
-export function waitUntil(thisReturnsTruthy, errorMessage = `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`) {
-  andThen(chainedValue => new Promise((resolve) => {
-    testPromise.errorMessage = errorMessage;
-    resolveWhenPredicateReturnsTruthy(thisReturnsTruthy, resolve, chainedValue);
-  }));
+export function waitUntil(
+  thisReturnsTruthy,
+  errorMessage = `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`
+) {
+  andThen(
+    chainedValue =>
+      new Promise(resolve => {
+        testPromise.errorMessage = errorMessage;
+        resolveWhenPredicateReturnsTruthy(
+          thisReturnsTruthy,
+          resolve,
+          chainedValue
+        );
+      })
+  );
 }
 
 export function waitMillis(milliseconds) {
-  andThen(() => new Promise(resolve => {
-    testPromise.errorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
-    setTimeout(resolve, milliseconds);
-  }));
+  andThen(
+    () =>
+      new Promise(resolve => {
+        testPromise.errorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
+        setTimeout(resolve, milliseconds);
+      })
+  );
 }
 
-export function waitUntilChange(predicate, errorMessage = `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}`) {
+export function waitUntilChange(
+  predicate,
+  errorMessage = `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}`
+) {
   let initialValue;
   let newValue;
 
