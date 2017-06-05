@@ -31,6 +31,7 @@
     "babel-preset-stage-2": "6.5.0",
     "chai": "3.5.0",
     "dirty-chai": "1.2.2",
+    "documentation": "4.0.0-rc.1",
     "glob": "7.0.5",
     "phantomjs": "2.1.7",
     "prettier": "1.4.2",
