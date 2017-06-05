@@ -24,8 +24,13 @@
 
 import FakeXMLHttpRequest from 'fake-xml-http-request';
 
-// Extends FakeXMLHttpRequest to register each new
-// request with fakehr
+/**
+ * Extends {@link https://github.com/pretenderjs/FakeXMLHttpRequest|FakeXMLHttpRequest} to register each new request with fakehr
+ *
+ * Also has the convenience method `respondWithJson` that takes two arguments:
+ * the HTTP status code as an int, and the response body as a plain object (that will be stringified by the function)
+ * @class FakeRequest
+ */
 function FakeRequest() {
   FakeXMLHttpRequest.call(this);
   fakehr.addRequest(this);
@@ -68,13 +73,13 @@ var fakehr = {
     this.clear();
   },
 
-  /**
+  /*
    * Matches the given request with mocked.
    * @param method
    * @param url
    * @param requestBody The request body for advanced comparison (useful for POST requests with the same url).
    * @param readyState
-   * @returns {Object} the matched request if found or undefined.
+   * @returns {FakeRequest} the matched request if found or undefined.
    */
   match: function(method, url, requestBody, readyState) {
     if (readyState === undefined) {
