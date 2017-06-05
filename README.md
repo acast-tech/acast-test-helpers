@@ -119,8 +119,8 @@ describe('my app', () => {
 ```
 
 ## Installation
-Make sure to add our GemFury repo to you npm path with something like 
-this: https://github.com/acastSthlm/test-setup-and-examples/blob/master/.npmrc
-
-Then simply:
 `npm install --save-dev --save-exact acast-test-helpers`
+or the shorter
+`npm i -DE acast-test-helpers`
+
+
