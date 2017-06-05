@@ -61,7 +61,7 @@ import { createMemoryHistory } from 'react-router';
 import renderMyApp from 'renderMyApp.js';
 
 describe('my app', () => {
-  setupAndTeardownApp(createMemoryHistory, renderMyApp);
+  setupAndTeardownApp(renderMyApp, createMemoryHistory);
 
   describe('with basic acceptance testing', () => {
     it('shows greeting when I click the hello button on the say-hello page', () => {
