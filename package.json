@@ -13,6 +13,7 @@
     "build:watch": "npm run build:production -- --watch",
     "prerelease": "npm run build && npm test",
     "release": "npm pack && curl -F package=@$npm_package_name-$npm_package_version.tgz $npm_package_registry",
+    "postrelease": "npm shrinkwrap --dev",
     "env": "env"
   },
   "files": [
