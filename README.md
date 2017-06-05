@@ -1,6 +1,12 @@
 # acast-test-helpers
+## Capabilites
+* Browser level acceptance testing (`visit`, `click`, `waitUntilExists`)
+* Asynchronous unit testing (`andThen`, `waitUntil`, `waitUntilChange`)
+* Faking XHR (`waitUntilXhrExists`, `findXhr`, `resolveWithJson`)
+* Faking Fetch API (`waitUntilFetchExists`, `fetchRespond`)
 
-A bunch of helper methods that greatly simplify asynchronous unit and acceptance 
+## Overview
+This library contains a bunch of helper methods that greatly simplify asynchronous unit and acceptance 
 testing of front end web apps with Mocha. It also includes two different 
 ways to stub server calls: one for when using window.fetch, and another for using regular XHR.
 
