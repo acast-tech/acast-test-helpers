@@ -4,6 +4,12 @@ import { setupAsync, andThen, waitUntil } from './async';
 let root;
 let history;
 
+/**
+ * Used for testing reactions to window resize events.
+ * The test root div starts at 1024 pixels and can be scaled up or down with this method.
+ * Will trigger a resize event on the `window` object.
+ * @param {number} scale The scale by which to multiply the current width of the test root div.
+ */
 export function scaleWindowWidth(scale) {
   andThen(() => {
     var $root = $(root);
@@ -39,6 +45,16 @@ function createRootForTests() {
   return root;
 }
 
+/**
+ * This adds the necessary `beforeEach` and `afterEach` calls to set up and tear down the entire application
+ * between each test method, for acceptance testing.
+ * @param {function} renderAppIntoElementWithHistory The function that will render your app.
+ * It will be passed two elements: the app to render into, and the history that will be used.
+ * @param {function} [createHistory] When called without arguments, this functions should return the history instance to
+ * use. This instance will then be passed as the second argument to renderAppIntoElementWithHistory
+ * @param {function} [unrenderAppFromElement] This will be called when your app should be torn down and removed from the DOM.
+ * It will receive as only argument the same element that was passed to renderAppIntoElementWithHistory.
+ */
 export function setupAndTeardownApp(
   renderAppIntoElementWithHistory,
   createHistory = () => {},
@@ -63,6 +79,10 @@ export function setupAndTeardownApp(
   afterEach(() => teardownApp(unrenderAppFromElement));
 }
 
+/**
+ * Triggers a route change in your app by pushing to the history.
+ * @param {string} route The path to go to.
+ */
 export function visit(route) {
   if (!history) {
     throw new Error(
@@ -74,18 +94,50 @@ export function visit(route) {
   });
 }
 
+/**
+ * Waits for an element to show up, and then simulates a user click by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate click on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * click('.element-to-click', { clientX: 1337, clientY: 1338 });
+ */
 export function click(selector, options) {
   triggerMouseEvent(click, selector, options, ['mousedown', 'mouseup']);
 }
 
+/**
+ * Waits for an element to show up, and then simulates a user mouse down by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate mouse down on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * mouseDown('.element-to-mouse-down-on', { clientX: 1337, clientY: 1338 });
+ */
 export function mouseDown(selector, options) {
   triggerMouseEvent(mouseDown, selector, options);
 }
 
+/**
+ * Waits for an element to show up, and then simulates a user mouse up by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate mouse up on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * mouseUp('.element-to-mouse-up-on', { clientX: 1337, clientY: 1338 });
+ */
 export function mouseUp(selector, options) {
   triggerMouseEvent(mouseUp, selector, options);
 }
 
+/**
+ * Waits for an element to show up, and then simulates a user mouse move by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate mouse move on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * mouseDown('.element-to-mouse-move-on', { clientX: 1337, clientY: 1338 });
+ */
 export function mouseMove(selector, options) {
   triggerMouseEvent(mouseMove, selector, options);
 }
@@ -125,6 +177,15 @@ function triggerMouseEvent(
   });
 }
 
+/**
+ * Waits for an input element to show up, and then simulates a user filling in the value of that input.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to fill in.
+ * Note that the selector or jQuery object must represent exactly one (1) input element in the app, or the call will fail.
+ * This will trigger 'input' and 'changed' events on the selected input element.
+ * @param {*} value The value to fill into the input.
+ * @example
+ * fillIn('.input-container input', 'awesome value');
+ */
 export function fillIn(selector, value) {
   waitUntilExists(
     selector,
@@ -142,6 +203,12 @@ export function fillIn(selector, value) {
   });
 }
 
+/**
+ * Trigger a key event in an element.
+ * @param {string|jQuery} selector The jQuery selector or object of element(s) to trigger key event in.
+ * @param {string} keyEventString The type of key event to trigger, e. g. 'keydown', 'keyup' or 'keypress'
+ * @param {number} keyCode The integer representing which key is being pressed.
+ */
 export function keyEventIn(selector, keyEventString, keyCode) {
   waitUntilExists(
     selector,
@@ -154,6 +221,13 @@ export function keyEventIn(selector, keyEventString, keyCode) {
   });
 }
 
+/**
+ * Waits until at least one element in the app matches a selector.
+ * @param {string} selector The jQuery selector to wait for matches on.
+ * @param {string|function} errorMessage The error message to show if the function times out waiting for the selector
+ * to give a match. If could also be a function that should return the error message string. If it is a function
+ * it will be called as late as possible, after having timed out.
+ */
 export function waitUntilExists(
   selector,
   errorMessage = `acast-test-helpers#waitUntilExists(): Selector never showed up: '${selector}'`
@@ -164,6 +238,11 @@ export function waitUntilExists(
   }, errorMessage);
 }
 
+/**
+ * First waits for at least one element in the app to match a selector, and then waits for all of those elements to
+ * go away.
+ * @param {string} selector The jQuery selector to first receive a match and then to stop doing so.
+ */
 export function waitUntilDisappears(selector) {
   waitUntilExists(
     selector,
@@ -175,6 +254,12 @@ export function waitUntilDisappears(selector) {
   );
 }
 
+/**
+ * Waits for a selector not to have any matching elements in the app.
+ * @param {string} selector The jQuery selector to check for match.
+ * @param {string|function} errorMessage The error message to show, either as a string or as a function returning
+ * a string, that will be called when the error message is needed.
+ */
 export function waitUntilDoesNotExist(
   selector,
   errorMessage = `acast-test-helpers#waitUntilDoesNotExist(): Selector never stopped existing: '${selector}'`
@@ -184,8 +269,17 @@ export function waitUntilDoesNotExist(
   }, errorMessage);
 }
 
+/**
+ * Convenience method to matching jQuery selectors within the app only (and not in the entire window).
+ * @param {string} selector The jQuery selector to match.
+ * @returns {jQuery} The jQuery object matching the selector within the app.
+ */
 export const find = selector => $(selector, root);
 
+
+/**
+ * Simply the jQuery constructor.
+ */
 export const jQuery = $;
 
 function createMouseEvent(

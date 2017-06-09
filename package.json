@@ -14,6 +14,7 @@
     "prerelease": "npm run build && npm test",
     "release": "npm pack && curl -F package=@$npm_package_name-$npm_package_version.tgz $npm_package_registry",
     "postrelease": "npm shrinkwrap --dev",
+    "document": "documentation readme src --section API --config documentation.yml && markdown-toc -i README.md",
     "env": "env"
   },
   "files": [
@@ -33,6 +34,7 @@
     "dirty-chai": "1.2.2",
     "documentation": "4.0.0-rc.1",
     "glob": "7.0.5",
+    "markdown-toc": "1.1.0",
     "phantomjs": "2.1.7",
     "prettier": "1.4.2",
     "sinon": "1.17.4",
