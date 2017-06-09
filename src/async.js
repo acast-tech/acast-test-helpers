@@ -97,8 +97,17 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
 
 /**
  * Waits until a callback returns any truthy value. It waits by polling the function repeatedly.
+ * This is very useful for verifying test results, among other things.
  * @param {function} thisReturnsTruthy The function to poll.
  * @param {string|function} errorMessage The string, or function returning a string, to be shown if this times out.
+ *
+ * @example
+ * waitUntil(() => expect(foobar).to.equal(3)); // This will either pass as the expectation holds and is returned as truthy, or keep polling.
+ * @example
+ * waitUntil(() => 3);
+ * andThen(value => {
+ *   // value = 3
+ * });
  */
 export function waitUntil(
   thisReturnsTruthy,

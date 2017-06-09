@@ -46,6 +46,16 @@ export function findXhr(method, url) {
  * where active.
  * @param {string} method Same as in {@link findXhr}
  * @param {string} url Same as in {@link findXhr}
+ * @see {@link waitUntilFetchExists}
+ *
+ * @example
+ * waitUntilXhrExists('GET', '/api/user/1337');
+ * andThen(request => {
+ *   request.respondWithJson(200, {
+ *     id: 1337,
+ *     name: 'Fire'
+ *   });
+ * });
  */
 export function waitUntilXhrExists(method, url) {
   waitUntil(

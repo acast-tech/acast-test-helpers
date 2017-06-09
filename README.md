@@ -370,11 +370,25 @@ andThen(someElementAsJqueryObject => {
 ### waitUntil
 
 Waits until a callback returns any truthy value. It waits by polling the function repeatedly.
+This is very useful for verifying test results, among other things.
 
 **Parameters**
 
 -   `thisReturnsTruthy` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** The function to poll.
 -   `errorMessage` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function))** The string, or function returning a string, to be shown if this times out. (optional, default `` `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}` ``)
+
+**Examples**
+
+```javascript
+waitUntil(() => expect(foobar).to.equal(3)); // This will either pass as the expectation holds and is returned as truthy, or keep polling.
+```
+
+```javascript
+waitUntil(() => 3);
+andThen(value => {
+  // value = 3
+});
+```
 
 ### waitMillis
 
@@ -418,11 +432,25 @@ Use this by calling it once on top of the appropriate `describe`.
 
 ### waitUntilFetchExists
 
+-   **See: [waitUntilXhrExists](#waituntilxhrexists)**
+
 Waits until a fetch call has been made, and resolves with the same return value as in [fetchRespond](#fetchrespond).
 
 **Parameters**
 
 -   `path` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The fetched path to wait for. Same as in [fetchRespond](#fetchrespond).
+
+**Examples**
+
+```javascript
+waitUntilFetchExists('/api/user/1337');
+andThen(request => {
+  request.resolveWith(200, {
+    id: 1337,
+    name: 'Fire'
+  });
+});
+```
 
 ### setupFakeFetch
 
@@ -477,6 +505,8 @@ Returns **([FakeRequest](#fakerequest) | null)** The matching [FakeRequest](#fak
 
 ### waitUntilXhrExists
 
+-   **See: [waitUntilFetchExists](#waituntilfetchexists)**
+
 Asynchronous version of [findXhr](#findxhr).
 Waits until the matched XHR request shows up, and then passes it to the next asynchronous function.
 If the test times out while waiting for the request to show up, a helpful error message will show which requests
@@ -486,6 +516,18 @@ where active.
 
 -   `method` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Same as in [findXhr](#findxhr)
 -   `url` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Same as in [findXhr](#findxhr)
+
+**Examples**
+
+```javascript
+waitUntilXhrExists('GET', '/api/user/1337');
+andThen(request => {
+  request.respondWithJson(200, {
+    id: 1337,
+    name: 'Fire'
+  });
+});
+```
 
 ### FakeRequest
 
