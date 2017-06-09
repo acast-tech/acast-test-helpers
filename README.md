@@ -184,7 +184,7 @@ between each test method, for acceptance testing.
 **Parameters**
 
 -   `renderAppIntoElementWithHistory` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** The function that will render your app.
-    It will be passed two elements: the app to render into, and the history that will be used.
+    It will be passed two arguments: the element to render the app into, and the history that will be used.
 -   `createHistory` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** When called without arguments, this functions should return the history instance to
     use. This instance will then be passed as the second argument to renderAppIntoElementWithHistory (optional, default `()=>{}`)
 -   `unrenderAppFromElement` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** This will be called when your app should be torn down and removed from the DOM.

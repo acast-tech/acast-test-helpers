@@ -49,7 +49,7 @@ function createRootForTests() {
  * This adds the necessary `beforeEach` and `afterEach` calls to set up and tear down the entire application
  * between each test method, for acceptance testing.
  * @param {function} renderAppIntoElementWithHistory The function that will render your app.
- * It will be passed two elements: the app to render into, and the history that will be used.
+ * It will be passed two arguments: the element to render the app into, and the history that will be used.
  * @param {function} [createHistory] When called without arguments, this functions should return the history instance to
  * use. This instance will then be passed as the second argument to renderAppIntoElementWithHistory
  * @param {function} [unrenderAppFromElement] This will be called when your app should be torn down and removed from the DOM.
