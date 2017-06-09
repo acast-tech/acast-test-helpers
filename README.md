@@ -22,6 +22,16 @@
   * [waitUntilDoesNotExist](#waituntildoesnotexist)
   * [find](#find)
   * [jQuery](#jquery)
+  * [setupAsync](#setupasync)
+  * [andThen](#andthen)
+  * [waitUntil](#waituntil)
+  * [waitMillis](#waitmillis)
+  * [waitUntilChange](#waituntilchange)
+  * [setupFakeFetchAsync](#setupfakefetchasync)
+  * [waitUntilFetchExists](#waituntilfetchexists)
+  * [setupFakeFetch](#setupfakefetch)
+  * [teardownFakeFetch](#teardownfakefetch)
+  * [fetchRespond](#fetchrespond)
   * [startFakingXhr](#startfakingxhr)
   * [stopFakingXhr](#stopfakingxhr)
   * [findXhr](#findxhr)
@@ -332,6 +342,119 @@ Returns **[jQuery](#jquery)** The jQuery object matching the selector within the
 ### jQuery
 
 Simply the jQuery constructor.
+
+### setupAsync
+
+Sets up the async test tools by adding the appropriate calls to `beforeEach` and `afterEach`.
+Call once in the top of a `describe` that you wish to use the async tools in.
+NOTE: When using [setupAndTeardownApp](#setupandteardownapp), it is not necessary to call this function separately.
+
+### andThen
+
+Triggers a callback after the previous asynchronous tool function resolves.
+
+**Parameters**
+
+-   `doThis` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** The callback function to call when the previous asynchronous tool function resolves. This
+    function will receive as argument the resolved result of that previous asynchronous tool function.
+
+**Examples**
+
+```javascript
+waitUntilExists('.some-element');
+andThen(someElementAsJqueryObject => {
+  // someElementAsJqueryObject is the result of matching '.some-element'.
+});
+```
+
+### waitUntil
+
+Waits until a callback returns any truthy value. It waits by polling the function repeatedly.
+
+**Parameters**
+
+-   `thisReturnsTruthy` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** The function to poll.
+-   `errorMessage` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function))** The string, or function returning a string, to be shown if this times out. (optional, default `` `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}` ``)
+
+### waitMillis
+
+Waits a specific number of milliseconds.
+NOTE: Using this method is highly discouraged for anything other than temporary
+experiments. The reason is that it leads to either very long running or non-deterministic tests,
+none of which is desirable.
+
+**Parameters**
+
+-   `milliseconds` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** The number of milliseconds to wait.
+
+### waitUntilChange
+
+Waits until a function gives a different return value from one call to the next.
+
+**Parameters**
+
+-   `predicate` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** The function to be polled.
+-   `errorMessage` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function))** The string, or function returning a string, to be shown if this times out. (optional, default `` `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}` ``)
+
+**Examples**
+
+```javascript
+let foo = 'something';
+waitUntilChange(() => foo);
+andThen(theNewValueOfFoo => {
+  console.log(theNewValueOfFoo); // 'something else'
+});
+setTimeout(() => {
+  foo = 'something else';
+}, 1000);
+```
+
+### setupFakeFetchAsync
+
+Convenience method to set up everything needed to use fake fetch in an async environment.
+Calls [setupAsync](#setupasync), [setupFakeFetch](#setupfakefetch) and [teardownFakeFetch](#teardownfakefetch).
+
+Use this by calling it once on top of the appropriate `describe`.
+
+### waitUntilFetchExists
+
+Waits until a fetch call has been made, and resolves with the same return value as in [fetchRespond](#fetchrespond).
+
+**Parameters**
+
+-   `path` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The fetched path to wait for. Same as in [fetchRespond](#fetchrespond).
+
+### setupFakeFetch
+
+Replaces the global `window.fetch` function with a fake one to intercept any calls to fetch, and enable the
+tools in this module.
+Should be called before each test method that wants to fake fetch.
+
+### teardownFakeFetch
+
+Restores the original `window.fetch` method and tears down what was set up with [setupFakeFetch](#setupfakefetch).
+Should be called after each test method before which [setupFakeFetch](#setupfakefetch) was called.
+
+### fetchRespond
+
+Resolve to a previously intercepted fetch call.
+
+**Parameters**
+
+-   `path` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The path of the previous fetch call to respond to.
+
+**Examples**
+
+```javascript
+fetchRespond('/api/user/1337').resolveWith(200, {
+  id: 1337,
+  name: 'Fire'
+});
+```
+
+Returns **{resolveWith: (function (any?, any?)), rejectWith: (function (any?))}** An object with two methods:
+`resolveWith` and `rejectWith`. Most often you want to use `resolveWith`, since even HTTP errors such as 404 will
+result in a resolved fetch promise. `resolveWith` takes two arguments: the HTTP status, and the JSON return value.
 
 ### startFakingXhr
 

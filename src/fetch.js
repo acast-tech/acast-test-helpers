@@ -60,6 +60,11 @@ function throwIfPathIsNotAwaitingResolution(path) {
 
 window.fetch = window.fetch; // For some unexplainable reason, PhantomJS doesn't pass the tests without this.
 
+/**
+ * Replaces the global `window.fetch` function with a fake one to intercept any calls to fetch, and enable the
+ * tools in this module.
+ * Should be called before each test method that wants to fake fetch.
+ */
 export function setupFakeFetch() {
   pathToPromisesMap = {};
   originalFetch = window.fetch;
@@ -67,11 +72,27 @@ export function setupFakeFetch() {
   window.fetch = createFakeFetch();
 }
 
+/**
+ * Restores the original `window.fetch` method and tears down what was set up with {@link setupFakeFetch}.
+ * Should be called after each test method before which {@link setupFakeFetch} was called.
+ */
 export function teardownFakeFetch() {
   window.fetch = originalFetch;
   pathToPromisesMap = null;
 }
 
+/**
+ * Resolve to a previously intercepted fetch call.
+ * @param {string} path The path of the previous fetch call to respond to.
+ * @returns {{resolveWith: (function(*=, *=)), rejectWith: (function(*=))}} An object with two methods:
+ * `resolveWith` and `rejectWith`. Most often you want to use `resolveWith`, since even HTTP errors such as 404 will
+ * result in a resolved fetch promise. `resolveWith` takes two arguments: the HTTP status, and the JSON return value.
+ * @example
+ * fetchRespond('/api/user/1337').resolveWith(200, {
+ *   id: 1337,
+ *   name: 'Fire'
+ * });
+ */
 export function fetchRespond(path) {
   throwIfNotSetUp();
   throwIfPathIsNotAwaitingResolution(path);

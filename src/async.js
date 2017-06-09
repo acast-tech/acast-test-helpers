@@ -2,6 +2,11 @@ let testPromise = null;
 
 const POLL_INTERVAL_MILLISECONDS = 100;
 
+/**
+ * Sets up the async test tools by adding the appropriate calls to `beforeEach` and `afterEach`.
+ * Call once in the top of a `describe` that you wish to use the async tools in.
+ * NOTE: When using {@link setupAndTeardownApp}, it is not necessary to call this function separately.
+ */
 export function setupAsync() {
   beforeEach('create test promise', () => {
     if (testPromise) {
@@ -52,6 +57,17 @@ function getErrorMessage() {
   return testPromise.errorMessage;
 }
 
+/**
+ * Triggers a callback after the previous asynchronous tool function resolves.
+ * @param {function} doThis The callback function to call when the previous asynchronous tool function resolves. This
+ * function will receive as argument the resolved result of that previous asynchronous tool function.
+ * @example
+ * waitUntilExists('.some-element');
+ * andThen(someElementAsJqueryObject => {
+ *   // someElementAsJqueryObject is the result of matching '.some-element'.
+ * });
+ *
+ */
 export function andThen(doThis) {
   if (!testPromise) {
     throw new Error(
@@ -79,6 +95,11 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
   }
 }
 
+/**
+ * Waits until a callback returns any truthy value. It waits by polling the function repeatedly.
+ * @param {function} thisReturnsTruthy The function to poll.
+ * @param {string|function} errorMessage The string, or function returning a string, to be shown if this times out.
+ */
 export function waitUntil(
   thisReturnsTruthy,
   errorMessage = `acast-test-helpers#waitUntil() timed out since the following function never returned a truthy value within the timeout: ${thisReturnsTruthy}`
@@ -96,6 +117,13 @@ export function waitUntil(
   );
 }
 
+/**
+ * Waits a specific number of milliseconds.
+ * NOTE: Using this method is highly discouraged for anything other than temporary
+ * experiments. The reason is that it leads to either very long running or non-deterministic tests,
+ * none of which is desirable.
+ * @param {number} milliseconds The number of milliseconds to wait.
+ */
 export function waitMillis(milliseconds) {
   andThen(
     () =>
@@ -106,6 +134,20 @@ export function waitMillis(milliseconds) {
   );
 }
 
+/**
+ * Waits until a function gives a different return value from one call to the next.
+ * @param {function} predicate The function to be polled.
+ * @param {string|function} errorMessage The string, or function returning a string, to be shown if this times out.
+ * @example
+ * let foo = 'something';
+ * waitUntilChange(() => foo);
+ * andThen(theNewValueOfFoo => {
+ *   console.log(theNewValueOfFoo); // 'something else'
+ * });
+ * setTimeout(() => {
+ *   foo = 'something else';
+ * }, 1000);
+ */
 export function waitUntilChange(
   predicate,
   errorMessage = `acast-test-helpers#waitUntilChange() timed out since the return value of the following function never changed: ${predicate}`
