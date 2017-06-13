@@ -19,7 +19,7 @@
     "dist",
     "README.md",
     "LICENSE.txt",
-    "npm-shinkwrap.json"
+    "npm-shrinkwrap.json"
   ],
   "keywords": [],
   "author": "",
