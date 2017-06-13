@@ -2835,7 +2835,7 @@
         "assert-plus": {
           "version": "1.0.0",
           "from": "assert-plus@1.0.0",
-          "resolved": "https://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz",
+          "resolved": "http://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz",
           "dev": true
         }
       }
