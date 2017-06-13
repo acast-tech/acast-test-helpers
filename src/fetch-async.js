@@ -34,7 +34,6 @@ export function setupFakeFetchAsync() {
   afterEach(teardownFakeFetch);
 }
 
-
 /**
  * Waits until a fetch call has been made, and resolves with the same return value as in {@link fetchRespond}.
  * @param {string} path The fetched path to wait for. Same as in {@link fetchRespond}.

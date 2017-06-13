@@ -296,7 +296,6 @@ export function waitUntilDoesNotExist(
  */
 export const find = selector => $(selector, root);
 
-
 /**
  * Simply the jQuery constructor.
  */

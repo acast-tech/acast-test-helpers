@@ -1,6 +1,6 @@
 {
   "name": "acast-test-helpers",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "build:watch": "npm run build:production -- --watch",
     "prerelease": "npm run build && npm test",
     "release": "npm pack && curl -F package=@$npm_package_name-$npm_package_version.tgz $npm_package_registry",
-    "postrelease": "npm shrinkwrap --dev",
+    "prepare": "npm shrinkwrap --dev && npm run document",
     "document": "documentation readme src --section API --config documentation.yml && markdown-toc -i README.md",
     "env": "env"
   },
