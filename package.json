@@ -11,6 +11,7 @@
     "build": "npm run build:production",
     "build:production": "babel src --out-dir dist --copy-files",
     "build:watch": "npm run build:production -- --watch",
+    "prepare": "npm run test && npm shrinkwrap --dev",
     "document": "documentation readme src --section API --config documentation.yml && markdown-toc -i README.md",
     "env": "env"
   },
