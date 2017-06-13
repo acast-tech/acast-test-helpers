@@ -14,9 +14,14 @@
     "document": "documentation readme src --section API --config documentation.yml && markdown-toc -i README.md",
     "env": "env"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.txt",
+    "npm-shinkwrap.json"
+  ],
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "devDependencies": {
     "babel-cli": "6.8.0",
     "babel-loader": "6.2.4",
