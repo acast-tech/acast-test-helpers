@@ -11,9 +11,8 @@
     "build": "npm run build:production",
     "build:production": "babel src --out-dir dist --copy-files",
     "build:watch": "npm run build:production -- --watch",
-    "prerelease": "npm run build && npm test",
+    "prerelease": "npm run build && npm test && npm shrinkwrap --dev",
     "release": "npm pack && curl -F package=@$npm_package_name-$npm_package_version.tgz $npm_package_registry",
-    "prepare": "npm shrinkwrap --dev && npm run document",
     "document": "documentation readme src --section API --config documentation.yml && markdown-toc -i README.md",
     "env": "env"
   },
