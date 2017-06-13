@@ -16,10 +16,7 @@
     "env": "env"
   },
   "files": [
-    "dist",
-    "README.md",
-    "LICENSE.txt",
-    "npm-shrinkwrap.json"
+    "dist"
   ],
   "keywords": [],
   "author": "",
