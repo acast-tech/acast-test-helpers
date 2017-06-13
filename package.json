@@ -1,6 +1,6 @@
 {
   "name": "acast-test-helpers",
-  "version": "10.0.5",
+  "version": "10.0.6",
   "description": "A bunch of helper methods that greatly simplify asynchronous unit and acceptance testing of front end web apps.",
   "main": "dist/index.js",
   "scripts": {
@@ -18,7 +18,12 @@
   "files": [
     "dist"
   ],
-  "keywords": ["test helpers", "asynchronous", "acceptance", "unit"],
+  "keywords": [
+    "test helpers",
+    "asynchronous",
+    "acceptance",
+    "unit"
+  ],
   "repository": "https://github.com/acastSthlm/acast-test-helpers",
   "bugs": "https://github.com/acastSthlm/acast-test-helpers/issues",
   "license": "GPL-3.0",
