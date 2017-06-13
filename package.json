@@ -1,6 +1,6 @@
 {
   "name": "acast-test-helpers",
-  "version": "10.0.1",
+  "version": "10.0.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
