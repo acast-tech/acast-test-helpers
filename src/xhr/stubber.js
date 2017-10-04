@@ -44,13 +44,13 @@ function FakeRequest() {
     );
 
   this.respondWithOctetStream = (statusCode, buffer) => {
-    this.responseType = "arraybuffer";
-    this._setResponseHeaders({'content-type': 'application/octet-stream'});
-    this.status = typeof status === "number" ? status : 200;
+    this.responseType = 'arraybuffer';
+    this._setResponseHeaders({ 'content-type': 'application/octet-stream' });
+    this.status = typeof status === 'number' ? status : 200;
     this.statusText = httpStatusCodes[this.status.toString()];
     this.response = buffer;
     this._readyStateChange(FakeXMLHttpRequest.DONE);
-  }
+  };
 }
 FakeRequest.prototype = FakeXMLHttpRequest.prototype;
 
