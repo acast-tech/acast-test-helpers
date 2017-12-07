@@ -218,8 +218,14 @@ export function fillIn(selector, value) {
     );
     const target = jqueryElement[0];
 
-    const potentialInputClasses = [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement];
-    const inputClass = potentialInputClasses.find(potential => target instanceof potential);
+    const potentialInputClasses = [
+      HTMLInputElement,
+      HTMLSelectElement,
+      HTMLTextAreaElement,
+    ];
+    const inputClass = potentialInputClasses.find(
+      potential => target instanceof potential
+    );
 
     const originalValueSetter = Object.getOwnPropertyDescriptor(
       inputClass.prototype,
