@@ -218,7 +218,10 @@ export function fillIn(selector, value) {
     );
     const target = jqueryElement[0];
 
-    const originalValueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; // https://github.com/cypress-io/cypress/issues/536#issuecomment-311694226
+    const originalValueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    ).set; // https://github.com/cypress-io/cypress/issues/536#issuecomment-311694226
     originalValueSetter.call(target, value);
 
     target.dispatchEvent(new Event('input', { bubbles: true }));
