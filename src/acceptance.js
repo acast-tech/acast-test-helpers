@@ -218,8 +218,11 @@ export function fillIn(selector, value) {
     );
     const target = jqueryElement[0];
 
+    const potentialInputClasses = [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement];
+    const inputClass = potentialInputClasses.find(potential => target instanceof potential);
+
     const originalValueSetter = Object.getOwnPropertyDescriptor(
-      HTMLInputElement.prototype,
+      inputClass.prototype,
       'value'
     ).set; // https://github.com/cypress-io/cypress/issues/536#issuecomment-311694226
     originalValueSetter.call(target, value);
