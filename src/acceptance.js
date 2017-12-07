@@ -217,7 +217,10 @@ export function fillIn(selector, value) {
       `acast-test-helpers#fillIn(): Found more than one match for selector: '${selector}'`
     );
     const target = jqueryElement[0];
-    target.value = value;
+
+    const originalValueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; // https://github.com/cypress-io/cypress/issues/536#issuecomment-311694226
+    originalValueSetter.call(target, value);
+
     target.dispatchEvent(new Event('input', { bubbles: true }));
     target.dispatchEvent(new Event('change', { bubbles: true }));
   });
