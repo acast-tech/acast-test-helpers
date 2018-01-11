@@ -1,4 +1,5 @@
 import {
+  asyncIt,
   click,
   mouseDown,
   mouseUp,
@@ -6,7 +7,6 @@ import {
   setupAsync,
   andThen,
   keyEventIn,
-  jQuery as $
 } from '../../src';
 
 describe('keyEventIn', () => {
@@ -24,7 +24,7 @@ describe('keyEventIn', () => {
     element = null;
   });
 
-  it('waits for selector to show up and then triggers a key event in it', (done) => {
+  asyncIt('waits for selector to show up and then triggers a key event in it', (done) => {
     function callback(event) {
       expect(event.bubbles).to.be.true();
       expect(event.keyCode).to.equal(39);

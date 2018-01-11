@@ -1,18 +1,24 @@
-import { setupAsync, andThen } from '../../src';
+import { asyncIt, setupAsync, andThen } from '../../src';
 
 describe('andThen', () => {
   describe('without having called setupAsync()', () => {
-    it('throws informative error', () => {
+    asyncIt('throws informative error', () => {
       expect(() => {
         andThen();
-      }).to.throw('You cannot use andThen() unless you call setupAsync() at the root of the appropriate describe()!');
+      }).to.throw('acast-test-helpers#andThen(): You cannot use the async functions unless you call setupAsync() at the root of the appropriate describe()!');
     });
   });
 
   describe('after having called setupAsync', () => {
     setupAsync();
 
-    it('chains off of a global promise (behind the curtains)', () => {
+    it('throws if not used inside `asyncIt`', () => {
+      expect(() => {
+        andThen();
+      }).to.throw('acast-test-helpers#andThen(): You can only use the async functions from acast-test-helpers inside asyncIt.');
+    });
+
+    asyncIt('chains off of a global promise (behind the curtains)', () => {
       let sequence = '0';
 
       andThen(() => {
@@ -32,15 +38,13 @@ describe('andThen', () => {
       expect(sequence).to.equal('0');
     });
 
-    it('NOTE: can be nested, but the ordering might seem unintuitive', (done) => {
+    asyncIt('cannot be nested', () => {
       let sequence = '0';
       andThen(() => {
         sequence += '1';
-        andThen(() => {
-          sequence += '3';
-          expect(sequence).to.equal('0123');
-          done();
-        });
+        expect(() => {
+          andThen();
+        }).to.throw('Also note that you cannot nest calls to async functions.');
       });
 
       andThen(() => {

@@ -1,4 +1,5 @@
 import {
+  asyncIt,
   click,
   mouseDown,
   mouseUp,
@@ -10,7 +11,7 @@ import {
 
 describe('Mouse Events', () => {
   describeMouseEventHelper(click, 'click', (attachElementToBody) => {
-    it('triggers mousedown and mouseup before click', () => {
+    asyncIt('triggers mousedown and mouseup before click', () => {
       const $element = $(attachElementToBody());
       const mouseDownListener = sinon.spy();
       const mouseUpListener = sinon.spy();
@@ -52,7 +53,7 @@ describe('Mouse Events', () => {
         document.body.removeChild(elementToInteractWith);
       });
 
-      it(`triggers ${eventName} event on selected element`, () => {
+      asyncIt(`triggers ${eventName} event on selected element`, () => {
         attachElementToBody();
         const spy = sinon.spy();
         $(elementToInteractWith).on(eventName, spy);
@@ -62,7 +63,7 @@ describe('Mouse Events', () => {
         });
       });
 
-      it('triggers event that bubbles', (done) => {
+      asyncIt('triggers event that bubbles', (done) => {
         const element = attachElementToBody();
         const spy = sinon.spy();
         $(element).on(eventName, e => {
@@ -72,7 +73,7 @@ describe('Mouse Events', () => {
         helperToTest(element);
       });
 
-      it('waits until element shows up before trying to interact with it', () => {
+      asyncIt('waits until element shows up before trying to interact with it', () => {
         const spy = sinon.spy();
         $(elementToInteractWith).on(eventName, spy);
         helperToTest('.element-to-interact-with');
@@ -83,7 +84,7 @@ describe('Mouse Events', () => {
         setTimeout(attachElementToBody, 500);
       });
 
-      it('takes extra options as parameters', (done) => {
+      asyncIt('takes extra options as parameters', (done) => {
         const element = attachElementToBody();
         $(element).on(eventName, e => {
           expect(e.clientX).to.equal(1337);
@@ -93,7 +94,7 @@ describe('Mouse Events', () => {
         helperToTest('.element-to-interact-with', { clientX: 1337, clientY: 1338 });
       });
 
-      it('evaluates options lazily if passed as function', (done) => {
+      asyncIt('evaluates options lazily if passed as function', (done) => {
         let screenX = 42;
 
         andThen(() => {

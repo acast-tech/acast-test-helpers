@@ -1,9 +1,9 @@
-import { setupAsync, waitMillis, andThen } from '../../src';
+import { asyncIt, setupAsync, waitMillis, andThen } from '../../src';
 
 describe('waitMillis', () => {
   setupAsync();
 
-  it('waits the specified amount of milliseconds', () => {
+  asyncIt('waits the specified amount of milliseconds', () => {
     const start = Date.now();
 
     waitMillis(1337);

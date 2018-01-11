@@ -1,4 +1,4 @@
-import { setupAsync, andThen, startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../../src';
+import { asyncIt, setupAsync, andThen, startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../../src';
 
 describe('fake xhr', () => {
   describe('findXhrRequest', () => {
@@ -44,7 +44,7 @@ describe('fake xhr', () => {
   describe('waitUntilXhrExists', () => {
     setupAsync();
 
-    it('resolves when the request is found', () => {
+    asyncIt('resolves when the request is found', () => {
       startFakingXhr();
       waitUntilXhrExists('POST', '/some/endpoint/path');
       andThen(request => {

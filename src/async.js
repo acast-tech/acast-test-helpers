@@ -19,6 +19,8 @@
  see https://github.com/acastSthlm/acast-test-helpers
  */
 let testPromise = null;
+let isInsideAsyncIt = false;
+let currentErrorMessage = null;
 
 const POLL_INTERVAL_MILLISECONDS = 100;
 
@@ -28,53 +30,89 @@ const POLL_INTERVAL_MILLISECONDS = 100;
  * NOTE: When using {@link setupAndTeardownApp}, it is not necessary to call this function separately.
  */
 export function setupAsync() {
-  beforeEach('create test promise', () => {
+  let timeoutHandle = null;
+
+  beforeEach('create test promise', function() {
     if (testPromise) {
       return;
     }
+
     testPromise = Promise.resolve();
+    currentErrorMessage = null;
+
+    const timeout = this.currentTest.timeout();
+    this.currentTest.timeout(0); // disable built-in timeout;
+
+    timeoutHandle = setTimeout(() => {
+      throw new Error(getErrorMessage());
+    }, timeout);
   });
 
-  afterEach('check test promise for errors', function() {
-    if (!testPromise) {
-      return;
-    }
-
-    const testTimeout = this.currentTest.timeout();
-    this.timeout(0); // disable mocha timeout, since we're taking it over.
-
-    return new Promise((resolve, reject) => {
-      const timeoutHandle = setTimeout(() => {
-        const errorMessage = getErrorMessage();
-        cleanUp();
-        reject(new Error(errorMessage));
-      }, testTimeout);
-
-      testPromise
-        .then(returnValue => {
-          cleanUp();
-          resolve(returnValue);
-        })
-        .catch(error => {
-          cleanUp();
-          reject(error);
-        });
-
-      const cleanUp = () => {
-        clearTimeout(testPromise.timeoutHandle);
-        testPromise = null;
-        clearTimeout(timeoutHandle);
-        this.timeout(testTimeout);
-      };
-    });
+  afterEach('remove test promise', () => {
+    testPromise = null;
+    clearTimeout(timeoutHandle);
   });
 }
 
+/**
+ * Drop-in replacement for the regular `it` function, with the same signature.
+ * This will augments the `it` functionality to automatically return the global test promise behind the scenes, to make
+ * the asynchronous helpers work as expected without any need for the developer to return a promise or call a `done` function.
+ * The `done` parameter can still be used and will override the global test promise flow as per the default mocha behavior.
+ *
+ * @NOTE: None of the async helpers can be used outside a function passed to `asyncIt`.
+ */
+export const asyncIt = createAsyncIt(it);
+asyncIt.only = createAsyncIt(it.only);
+asyncIt.skip = createAsyncIt(it.skip);
+
+function createAsyncIt(regularItFunction) {
+  return (description, func) => {
+    if (!func) {
+      regularItFunction(description);
+    } else {
+      regularItFunction(description, wrapForAsyncIt(func));
+    }
+  };
+}
+
+function wrapForAsyncIt(func) {
+  const wrappedBody = done => {
+    isInsideAsyncIt = true;
+    const funcResult = func(done);
+    isInsideAsyncIt = false;
+
+    if (isPromise(funcResult)) {
+      testPromise = testPromise.then(() => {
+        currentErrorMessage = 'Promise returned from `asyncIt` never resolved.';
+        return funcResult;
+      });
+    }
+
+    return testPromise;
+  };
+
+  const funcTakesDoneAsParameter = func.length === 1;
+  const wrapperFunc = funcTakesDoneAsParameter
+    ? done => wrappedBody(done)
+    : () => wrappedBody();
+
+  wrapperFunc.toString = () => func.toString();
+
+  return wrapperFunc;
+}
+
+function isPromise(maybePromise) {
+  return (
+    maybePromise && maybePromise.then && typeof maybePromise.then === 'function'
+  );
+}
+
 function getErrorMessage() {
-  if (typeof testPromise.errorMessage === 'function') {
-    return testPromise.errorMessage();
+  if (typeof currentErrorMessage === 'function') {
+    return currentErrorMessage();
   }
-  return testPromise.errorMessage;
+  return currentErrorMessage;
 }
 
 /**
@@ -91,7 +129,13 @@ function getErrorMessage() {
 export function andThen(doThis) {
   if (!testPromise) {
     throw new Error(
-      'acast-test-helpers#andThen(): You cannot use andThen() unless you call setupAsync() at the root of the appropriate describe()!'
+      'acast-test-helpers#andThen(): You cannot use the async functions unless you call setupAsync() at the root of the appropriate describe()!'
+    );
+  }
+
+  if (!isInsideAsyncIt) {
+    throw new Error(
+      'acast-test-helpers#andThen(): You can only use the async functions from acast-test-helpers inside asyncIt. Also note that you cannot nest calls to async functions.'
     );
   }
 
@@ -103,14 +147,18 @@ function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
   try {
     returnValue = predicate(chainedValue);
   } catch (e) {
-    testPromise.errorMessage = `acast-test-helpers#waitUntil() timed out. This is the last exception that was caught: ${e.message}`;
+    currentErrorMessage = `acast-test-helpers#waitUntil() timed out. This is the last exception that was caught: ${e.message}`;
     returnValue = false;
   }
   if (!!returnValue) {
     resolve(returnValue);
   } else {
-    testPromise.timeoutHandle = setTimeout(() => {
-      resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue);
+    const oldTestPromise = testPromise;
+    setTimeout(() => {
+      let isStillInSameTest = oldTestPromise === testPromise;
+      if (isStillInSameTest) {
+        resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue);
+      }
     }, POLL_INTERVAL_MILLISECONDS);
   }
 }
@@ -136,7 +184,7 @@ export function waitUntil(
   andThen(
     chainedValue =>
       new Promise(resolve => {
-        testPromise.errorMessage = errorMessage;
+        currentErrorMessage = errorMessage;
         resolveWhenPredicateReturnsTruthy(
           thisReturnsTruthy,
           resolve,
@@ -157,7 +205,7 @@ export function waitMillis(milliseconds) {
   andThen(
     () =>
       new Promise(resolve => {
-        testPromise.errorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
+        currentErrorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
         setTimeout(resolve, milliseconds);
       })
   );

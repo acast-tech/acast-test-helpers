@@ -1,4 +1,4 @@
-import { setupAsync, andThen, waitUntilExists } from '../../src';
+import { asyncIt, setupAsync, andThen, waitUntilExists } from '../../src';
 
 describe('waitUntilExists', () => {
   setupAsync();
@@ -10,7 +10,7 @@ describe('waitUntilExists', () => {
     document.body.removeChild(label);
   });
 
-  it('resolves with a jquery object of the selector when it exists', () => {
+  asyncIt('resolves with a jquery object of the selector when it exists', () => {
     setTimeout(() => {
       label.innerHTML = 'foobar';
       document.body.appendChild(label);

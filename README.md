@@ -15,6 +15,10 @@
   * [mouseDown](#mousedown)
   * [mouseUp](#mouseup)
   * [mouseMove](#mousemove)
+  * [touchStart](#touchstart)
+  * [touchMove](#touchmove)
+  * [touchCancel](#touchcancel)
+  * [touchEnd](#touchend)
   * [fillIn](#fillin)
   * [keyEventIn](#keyeventin)
   * [waitUntilExists](#waituntilexists)
@@ -23,6 +27,7 @@
   * [find](#find)
   * [jQuery](#jquery)
   * [setupAsync](#setupasync)
+  * [asyncIt](#asyncit)
   * [andThen](#andthen)
   * [waitUntil](#waituntil)
   * [waitMillis](#waitmillis)
@@ -95,6 +100,7 @@ For testing with Mocha. Currently only runs in browsers, see
 ```js
 import {
   setupAndTeardownApp,
+  asyncIt,
   startFakingXhr,
   stopFakingXhr,
   visit,
@@ -112,7 +118,7 @@ describe('my app', () => {
   setupAndTeardownApp(renderMyApp, createMemoryHistory);
 
   describe('with basic acceptance testing', () => {
-    it('shows greeting when I click the hello button on the say-hello page', () => {
+    asyncIt('shows greeting when I click the hello button on the say-hello page', () => {
       visit('/say-hello');
 
       click('.hello-button'); // This will wait for the button to show up, and then click it. Any jQuery selector will work.
@@ -130,7 +136,7 @@ describe('my app', () => {
     beforeEach(startFakingXhr);
     afterEach(stopFakingXhr);
 
-    it('displays the number of eggs we currently have on the server (using regular XHR)', () => {
+    asyncIt('displays the number of eggs we currently have on the server (using regular XHR)', () => {
       visit('/eggs');
 
       waitUntilXhrExists('GET', '/api/v1/eggs');
@@ -149,7 +155,7 @@ describe('my app', () => {
   describe('with fake fetch', () => {
     setupFakeFetchAsync();
 
-    it('shows the color of the day (using Fetch API)', () => {
+    asyncIt('shows the color of the day (using Fetch API)', () => {
       visit('/color');
 
       waitUntilFetchExists('/api/v1/color');
@@ -272,6 +278,70 @@ Waits for an element to show up, and then simulates a user mouse move by trigger
 mouseDown('.element-to-mouse-move-on', { clientX: 1337, clientY: 1338 });
 ```
 
+### touchStart
+
+Waits for an element to show up, and then simulates a user touch start by triggering a touch event on that element.
+
+**Parameters**
+
+-   `selector` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [jQuery](#jquery))** The jQuery selector or jQuery object to simulate touch on.
+    Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+-   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Any options to pass along to the simulated touch event.
+
+**Examples**
+
+```javascript
+touchStart('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+```
+
+### touchMove
+
+Waits for an element to show up, and then simulates a user touch move by triggering a touch event on that element.
+
+**Parameters**
+
+-   `selector` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [jQuery](#jquery))** The jQuery selector or jQuery object to simulate touch on.
+    Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+-   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Any options to pass along to the simulated touch event.
+
+**Examples**
+
+```javascript
+touchMove('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+```
+
+### touchCancel
+
+Waits for an element to show up, and then simulates a user touch cancel by triggering a touch event on that element.
+
+**Parameters**
+
+-   `selector` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [jQuery](#jquery))** The jQuery selector or jQuery object to simulate touch on.
+    Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+-   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Any options to pass along to the simulated touch event.
+
+**Examples**
+
+```javascript
+touchCancel('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+```
+
+### touchEnd
+
+Waits for an element to show up, and then simulates a user touch end by triggering a touch event on that element.
+
+**Parameters**
+
+-   `selector` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [jQuery](#jquery))** The jQuery selector or jQuery object to simulate touch on.
+    Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+-   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Any options to pass along to the simulated touch event.
+
+**Examples**
+
+```javascript
+touchEnd('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+```
+
 ### fillIn
 
 Waits for an input element to show up, and then simulates a user filling in the value of that input.
@@ -348,6 +418,13 @@ Simply the jQuery constructor.
 Sets up the async test tools by adding the appropriate calls to `beforeEach` and `afterEach`.
 Call once in the top of a `describe` that you wish to use the async tools in.
 NOTE: When using [setupAndTeardownApp](#setupandteardownapp), it is not necessary to call this function separately.
+
+### asyncIt
+
+Drop-in replacement for the regular `it` function, with the same signature.
+This will augments the `it` functionality to automatically return the global test promise behind the scenes, to make
+the asynchronous helpers work as expected without any need for the developer to return a promise or call a `done` function.
+The `done` parameter can still be used and will override the global test promise flow as per the default mocha behavior.
 
 ### andThen
 
