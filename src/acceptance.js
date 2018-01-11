@@ -166,7 +166,24 @@ function triggerMouseEvent(
   exportedFunction,
   selector,
   options,
-  mouseEventsToTriggerFirst = []
+  eventsToTriggerFirst = []) {
+    triggerEvent(exportedFunction, selector, options, createMouseEvent, eventsToTriggerFirst)
+}
+
+function triggerTouchEvent(
+  exportedFunction,
+  selector,
+  options,
+  eventsToTriggerFirst = []) {
+    triggerEvent(exportedFunction, selector, options, createTouchEvent, eventsToTriggerFirst)
+}
+
+function triggerEvent(
+  exportedFunction,
+  selector,
+  options,
+  createEvent,
+  eventsToTriggerFirst = []
 ) {
   const functionName = exportedFunction.name;
   const eventName = functionName.toLowerCase();
@@ -184,17 +201,29 @@ function triggerMouseEvent(
       ? options()
       : options;
 
-    function triggerMouseEvent(eventName) {
-      const event = createMouseEvent(eventName, evaluatedOptions);
+    function triggerEvent(eventName) {
+      const event = createEvent(eventName, evaluatedOptions);
       jqueryElement[0].dispatchEvent(event);
     }
 
-    const mouseEventsToTrigger = mouseEventsToTriggerFirst.concat([eventName]);
+    const eventsToTrigger = eventsToTriggerFirst.concat([eventName]);
 
-    mouseEventsToTrigger.forEach(eventName => {
-      triggerMouseEvent(eventName);
+    eventsToTrigger.forEach(eventName => {
+      triggerEvent(eventName);
     });
   });
+}
+
+/**
+ * Waits for an element to show up, and then simulates a user touch start by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch start on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * mouseDown('.element-to-touch-start-on', {touches: [{ clientX: 1337, clientY: 1338 }]});
+ */
+export function touchStart(selector, options) {
+  triggerTouchEvent(touchStart, selector, options);
 }
 
 /**
@@ -358,6 +387,28 @@ function createMouseEvent(
       button,
       relatedTarget
     );
+  }
+
+  return result;
+}
+
+function createTouchEvent(
+  type,
+  {
+    touches = [{
+      clientX: 0,
+      clientY: 0,
+    }],
+  } = {}
+) {
+  var result;
+
+  try {
+    result = new TouchEvent(type, {touches});
+  } catch (e) {
+    console.log(touches)
+    result = document.createEvent('TouchEvent');
+    result.initTouchEvent(type, {touches});
   }
 
   return result;
