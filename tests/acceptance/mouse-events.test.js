@@ -31,9 +31,9 @@ describe('Mouse Events', () => {
   describeMouseEventHelper(mouseUp, 'mouseup');
   describeMouseEventHelper(mouseMove, 'mousemove');
 
-  function describeMouseEventHelper(func, eventName, extraTests = ()=> {
+  function describeMouseEventHelper(helperToTest, eventName, extraTests = ()=> {
   }) {
-    describe(func.name, () => {
+    describe(helperToTest.name, () => {
       setupAsync();
 
       let elementToInteractWith;
@@ -56,7 +56,7 @@ describe('Mouse Events', () => {
         attachElementToBody();
         const spy = sinon.spy();
         $(elementToInteractWith).on(eventName, spy);
-        func('.element-to-interact-with');
+        helperToTest('.element-to-interact-with');
         andThen(() => {
           expect(spy).to.have.been.calledOnce();
         });
@@ -65,7 +65,7 @@ describe('Mouse Events', () => {
       it('waits until element shows up before trying to interact with it', () => {
         const spy = sinon.spy();
         $(elementToInteractWith).on(eventName, spy);
-        func('.element-to-interact-with');
+        helperToTest('.element-to-interact-with');
         andThen(() => {
           expect(spy).to.have.been.calledOnce();
         });
@@ -80,7 +80,7 @@ describe('Mouse Events', () => {
           expect(e.clientY).to.equal(1338);
           done();
         });
-        func('.element-to-interact-with', { clientX: 1337, clientY: 1338 });
+        helperToTest('.element-to-interact-with', { clientX: 1337, clientY: 1338 });
       });
 
       it('evaluates options lazily if passed as function', (done) => {
@@ -90,7 +90,7 @@ describe('Mouse Events', () => {
           screenX = 1337;
         });
 
-        func('.element-to-interact-with', () => ({ screenX }));
+        helperToTest('.element-to-interact-with', () => ({ screenX }));
 
         const element = attachElementToBody();
         $(element).on(eventName, e => {

@@ -32,7 +32,7 @@ let history;
  */
 export function scaleWindowWidth(scale) {
   andThen(() => {
-    var $root = $(root);
+    let $root = $(root);
     const currentWidth = $root.width();
     const newWidth = currentWidth * scale;
     $root.css('width', `${newWidth}px`);
@@ -162,20 +162,71 @@ export function mouseMove(selector, options) {
   triggerMouseEvent(mouseMove, selector, options);
 }
 
+/**
+ * Waits for an element to show up, and then simulates a user touch start by triggering a touch event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated touch event.
+ * @example
+ * touchStart('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+ */
+export function touchStart(selector, options) {
+  triggerTouchEvent(touchStart, selector, options);
+}
+
+/**
+ * Waits for an element to show up, and then simulates a user touch move by triggering a touch event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated touch event.
+ * @example
+ * touchMove('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+ */
+export function touchMove(selector, options) {
+  triggerTouchEvent(touchMove, selector, options);
+}
+
+/**
+ * Waits for an element to show up, and then simulates a user touch cancel by triggering a touch event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated touch event.
+ * @example
+ * touchCancel('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+ */
+export function touchCancel(selector, options) {
+  triggerTouchEvent(touchCancel, selector, options);
+}
+
+/**
+ * Waits for an element to show up, and then simulates a user touch end by triggering a touch event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated touch event.
+ * @example
+ * touchEnd('.element-to-touch', {touches: [{ clientX: 1337, clientY: 1338 }], changedTouches: [{ clientX: 1337, clientY: 1338}]});
+ */
+export function touchEnd(selector, options) {
+  triggerTouchEvent(touchEnd, selector, options);
+}
+
 function triggerMouseEvent(
   exportedFunction,
   selector,
   options,
-  eventsToTriggerFirst = []) {
-    triggerEvent(exportedFunction, selector, options, createMouseEvent, eventsToTriggerFirst)
+  eventsToTriggerFirst = []
+) {
+  triggerEvent(
+    exportedFunction,
+    selector,
+    options,
+    createMouseEvent,
+    eventsToTriggerFirst
+  );
 }
 
-function triggerTouchEvent(
-  exportedFunction,
-  selector,
-  options,
-  eventsToTriggerFirst = []) {
-    triggerEvent(exportedFunction, selector, options, createTouchEvent, eventsToTriggerFirst)
+function triggerTouchEvent(exportedFunction, selector, options) {
+  triggerEvent(exportedFunction, selector, options, createTouchEvent);
 }
 
 function triggerEvent(
@@ -202,8 +253,9 @@ function triggerEvent(
       : options;
 
     function triggerEvent(eventName) {
-      const event = createEvent(eventName, evaluatedOptions);
-      jqueryElement[0].dispatchEvent(event);
+      const target = jqueryElement[0];
+      const event = createEvent(eventName, evaluatedOptions, target);
+      target.dispatchEvent(event);
     }
 
     const eventsToTrigger = eventsToTriggerFirst.concat([eventName]);
@@ -212,18 +264,6 @@ function triggerEvent(
       triggerEvent(eventName);
     });
   });
-}
-
-/**
- * Waits for an element to show up, and then simulates a user touch start by triggering a mouse event on that element.
- * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch start on.
- * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
- * @param {object} [options] Any options to pass along to the simulated mouse event.
- * @example
- * mouseDown('.element-to-touch-start-on', {touches: [{ clientX: 1337, clientY: 1338 }]});
- */
-export function touchStart(selector, options) {
-  triggerTouchEvent(touchStart, selector, options);
 }
 
 /**
@@ -364,7 +404,7 @@ function createMouseEvent(
     relatedTarget = document.body.parentNode,
   } = {}
 ) {
-  var result;
+  let result;
 
   try {
     result = new MouseEvent(type, options);
@@ -392,24 +432,41 @@ function createMouseEvent(
   return result;
 }
 
-function createTouchEvent(
-  type,
-  {
-    touches = [{
-      clientX: 0,
-      clientY: 0,
-    }],
-  } = {}
-) {
-  var result;
+function createTouchEvent(type, options = {}, target) {
+  let result;
 
   try {
-    result = new TouchEvent(type, {touches});
+    const touches = mapTouchesToRealTouchInstances(
+      options.touches || [],
+      target
+    );
+
+    const changedTouches = mapTouchesToRealTouchInstances(
+      options.changedTouches || [],
+      target
+    );
+
+    const targetTouches = mapTouchesToRealTouchInstances(
+      options.targetTouches || [],
+      target
+    );
+    result = new TouchEvent(type, {
+      touches,
+      changedTouches,
+      targetTouches,
+    });
   } catch (e) {
-    console.log(touches)
-    result = document.createEvent('TouchEvent');
-    result.initTouchEvent(type, {touches});
+    throw new Error(
+      'acast-test-helpers: Touch event helpers are currently only supported in Chrome.'
+    );
   }
 
   return result;
+}
+
+function mapTouchesToRealTouchInstances(touches, target) {
+  let nextIdentifier = 0;
+  return touches.map(
+    touch => new Touch({ target, identifier: nextIdentifier++, ...touch })
+  );
 }
