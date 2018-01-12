@@ -1,6 +1,6 @@
 {
   "name": "acast-test-helpers",
-  "version": "11.1.3",
+  "version": "12.0.0",
   "description": "A bunch of helper methods that greatly simplify asynchronous unit and acceptance testing of front end web apps.",
   "main": "dist/index.js",
   "scripts": {
