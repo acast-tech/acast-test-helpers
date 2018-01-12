@@ -5,5 +5,8 @@ module.exports = {
     'tmp/tests-bundle.js'
   ]),
   framework: 'mocha',
-  launch_in_ci: ['PhantomJS'],
+  launch_in_ci: ['Chrome'],
+  browser_args: {
+    'Chrome': [ '--headless', '--disable-gpu', '--remote-debugging-port=9222' ],
+  },
 };
