@@ -1,4 +1,4 @@
-import { andThen, setupFakeFetchAsync, waitUntilFetchExists } from '../../src';
+import { asyncIt as it, andThen, setupFakeFetchAsync, waitUntilFetchExists } from '../../src';
 
 describe('fake fetch async', () => {
   setupFakeFetchAsync();

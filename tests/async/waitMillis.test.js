@@ -1,4 +1,4 @@
-import { setupAsync, waitMillis, andThen } from '../../src';
+import { asyncIt as it, setupAsync, waitMillis, andThen } from '../../src';
 
 describe('waitMillis', () => {
   setupAsync();

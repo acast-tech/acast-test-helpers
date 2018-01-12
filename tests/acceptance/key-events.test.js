@@ -1,4 +1,5 @@
 import {
+  asyncIt as it,
   click,
   mouseDown,
   mouseUp,
@@ -6,7 +7,6 @@ import {
   setupAsync,
   andThen,
   keyEventIn,
-  jQuery as $
 } from '../../src';
 
 describe('keyEventIn', () => {

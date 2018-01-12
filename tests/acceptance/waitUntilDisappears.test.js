@@ -1,4 +1,4 @@
-import { setupAsync, andThen, waitUntilDisappears } from '../../src';
+import { asyncIt as it, setupAsync, andThen, waitUntilDisappears } from '../../src';
 
 describe('waitUntilDisappears', () => {
   setupAsync();

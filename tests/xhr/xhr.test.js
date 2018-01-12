@@ -1,4 +1,4 @@
-import { setupAsync, andThen, startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../../src';
+import { asyncIt as it, setupAsync, andThen, startFakingXhr, stopFakingXhr, findXhr, waitUntilXhrExists } from '../../src';
 
 describe('fake xhr', () => {
   describe('findXhrRequest', () => {

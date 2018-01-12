@@ -1,4 +1,4 @@
-import { setupAsync, andThen, waitUntilExists } from '../../src';
+import { asyncIt as it, setupAsync, andThen, waitUntilExists } from '../../src';
 
 describe('waitUntilExists', () => {
   setupAsync();

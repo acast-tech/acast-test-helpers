@@ -1,4 +1,4 @@
-import { setupAsync, waitUntil, andThen } from '../../src';
+import { asyncIt as it, setupAsync, waitUntil, andThen } from '../../src';
 
 describe('waitUntil', () => {
   setupAsync();
@@ -20,6 +20,14 @@ describe('waitUntil', () => {
     waitUntil(() => {
       console.log('this should stop logging after test times out');
     });
+  });
+
+  it.skip('handles expections, returning the message of the last one upon timeout', () => {
+    waitUntil(() => expect('foo').to.equal('bar'));
+  });
+
+  it.skip('handles expections, returning the lazily evaluated message from the optional function passed', () => {
+    waitUntil(() => false, () => 13 + 37);
   });
 
   it('handles exceptions, silently treating them as falsy return values', () => {

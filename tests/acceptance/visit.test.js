@@ -1,4 +1,4 @@
-import { setupAsync, visit, andThen, setupAndTeardownApp } from '../../src';
+import { asyncIt as it, setupAsync, visit, andThen, setupAndTeardownApp } from '../../src';
 
 describe('visit', () => {
   describe('when setupAndTeardownApp has not been called', () => {
