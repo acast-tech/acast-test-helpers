@@ -62,6 +62,16 @@ describe('Mouse Events', () => {
         });
       });
 
+      it('triggers event that bubbles', (done) => {
+        const element = attachElementToBody();
+        const spy = sinon.spy();
+        $(element).on(eventName, e => {
+          expect(e.bubbles).to.equal(true);
+          done();
+        });
+        helperToTest(element);
+      });
+
       it('waits until element shows up before trying to interact with it', () => {
         const spy = sinon.spy();
         $(elementToInteractWith).on(eventName, spy);

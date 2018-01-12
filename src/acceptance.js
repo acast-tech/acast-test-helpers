@@ -451,6 +451,7 @@ function createTouchEvent(type, options = {}, target) {
       target
     );
     result = new TouchEvent(type, {
+      bubbles: true,
       touches,
       changedTouches,
       targetTouches,
