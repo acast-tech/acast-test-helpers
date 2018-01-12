@@ -100,7 +100,7 @@ For testing with Mocha. Currently only runs in browsers, see
 ```js
 import {
   setupAndTeardownApp,
-  asyncIt,
+  asyncIt as it,
   startFakingXhr,
   stopFakingXhr,
   visit,
@@ -118,7 +118,7 @@ describe('my app', () => {
   setupAndTeardownApp(renderMyApp, createMemoryHistory);
 
   describe('with basic acceptance testing', () => {
-    asyncIt('shows greeting when I click the hello button on the say-hello page', () => {
+    it('shows greeting when I click the hello button on the say-hello page', () => {
       visit('/say-hello');
 
       click('.hello-button'); // This will wait for the button to show up, and then click it. Any jQuery selector will work.
@@ -136,7 +136,7 @@ describe('my app', () => {
     beforeEach(startFakingXhr);
     afterEach(stopFakingXhr);
 
-    asyncIt('displays the number of eggs we currently have on the server (using regular XHR)', () => {
+    it('displays the number of eggs we currently have on the server (using regular XHR)', () => {
       visit('/eggs');
 
       waitUntilXhrExists('GET', '/api/v1/eggs');
@@ -155,7 +155,7 @@ describe('my app', () => {
   describe('with fake fetch', () => {
     setupFakeFetchAsync();
 
-    asyncIt('shows the color of the day (using Fetch API)', () => {
+    it('shows the color of the day (using Fetch API)', () => {
       visit('/color');
 
       waitUntilFetchExists('/api/v1/color');

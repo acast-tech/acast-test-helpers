@@ -1,5 +1,5 @@
 import {
-  asyncIt,
+  asyncIt as it,
   setupAndTeardownApp,
   scaleWindowWidth,
   andThen,
@@ -9,30 +9,30 @@ import {
 describe('test div dimensions', () => {
   setupAndTeardownApp(_ => {});
 
-  asyncIt('starts at 1024 x 1024', () => {
+  it('starts at 1024 x 1024', () => {
     assertTestRootWidthAndHeight(1024, 1024);
   });
 
-  asyncIt('width can be scaled down with scaleWindowWidth', () => {
+  it('width can be scaled down with scaleWindowWidth', () => {
     scaleWindowWidth(0.5);
 
     assertTestRootWidthAndHeight(512, 1024);
   });
 
-  asyncIt('width can be scaled up with scaleWindowWidth', () => {
+  it('width can be scaled up with scaleWindowWidth', () => {
     scaleWindowWidth(2);
 
     assertTestRootWidthAndHeight(2048, 1024);
   });
 
-  asyncIt('width can be scaled multiple times with scaleWindowWidth', () => {
+  it('width can be scaled multiple times with scaleWindowWidth', () => {
     scaleWindowWidth(0.5);
     scaleWindowWidth(2);
 
     assertTestRootWidthAndHeight(1024, 1024);
   });
 
-  asyncIt('triggers window resize event when calling scaleWindowWidth', () => {
+  it('triggers window resize event when calling scaleWindowWidth', () => {
     var eventListener = sinon.spy();
     $(window).resize(eventListener);
 

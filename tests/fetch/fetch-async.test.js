@@ -1,9 +1,9 @@
-import { asyncIt, andThen, setupFakeFetchAsync, waitUntilFetchExists } from '../../src';
+import { asyncIt as it, andThen, setupFakeFetchAsync, waitUntilFetchExists } from '../../src';
 
 describe('fake fetch async', () => {
   setupFakeFetchAsync();
 
-  asyncIt('resolves with the promise-looking object', () => {
+  it('resolves with the promise-looking object', () => {
     waitUntilFetchExists('/some/path');
 
     andThen(fetchRequest => {

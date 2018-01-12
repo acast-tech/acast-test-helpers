@@ -1,8 +1,8 @@
-import { asyncIt, setupAsync, waitUntil, andThen } from '../../src';
+import { asyncIt as it, setupAsync, waitUntil, andThen } from '../../src';
 
 describe('waitUntil', () => {
   setupAsync();
-  asyncIt('resolves when predicate returns true', () => {
+  it('resolves when predicate returns true', () => {
     let value = false;
 
     setTimeout(() => {
@@ -16,21 +16,21 @@ describe('waitUntil', () => {
     });
   });
 
-  asyncIt.skip('shuts down predicate after timeout', () => {
+  it.skip('shuts down predicate after timeout', () => {
     waitUntil(() => {
       console.log('this should stop logging after test times out');
     });
   });
 
-  asyncIt.skip('handles expections, returning the message of the last one upon timeout', () => {
+  it.skip('handles expections, returning the message of the last one upon timeout', () => {
     waitUntil(() => expect('foo').to.equal('bar'));
   });
 
-  asyncIt.skip('handles expections, returning the lazily evaluated message from the optional function passed', () => {
+  it.skip('handles expections, returning the lazily evaluated message from the optional function passed', () => {
     waitUntil(() => false, () => 13 + 37);
   });
 
-  asyncIt('handles exceptions, silently treating them as falsy return values', () => {
+  it('handles exceptions, silently treating them as falsy return values', () => {
     let value = false;
 
     setTimeout(() => {
@@ -47,7 +47,7 @@ describe('waitUntil', () => {
     });
   });
 
-  asyncIt('can be used solely to wait for an expectation to be true', () => {
+  it('can be used solely to wait for an expectation to be true', () => {
     let fruit = 'apple';
 
     setTimeout(() => {
@@ -57,7 +57,7 @@ describe('waitUntil', () => {
     waitUntil(() => expect(fruit).to.equal('banana'));
   });
 
-  asyncIt('resolves when predicate returns truthy string', () => {
+  it('resolves when predicate returns truthy string', () => {
     let value = false;
 
     setTimeout(() => {
@@ -67,7 +67,7 @@ describe('waitUntil', () => {
     waitUntil(() => value);
   });
 
-  asyncIt('resolves with the truthy value', () => {
+  it('resolves with the truthy value', () => {
     waitUntil(() => 'the value, yo');
 
     andThen((parameter) => {
@@ -75,7 +75,7 @@ describe('waitUntil', () => {
     });
   });
 
-  asyncIt('passes along the previously resolved value to the predicate', () => {
+  it('passes along the previously resolved value to the predicate', () => {
     andThen(() => {
       return 'the resolved value';
     });
@@ -87,7 +87,7 @@ describe('waitUntil', () => {
     })
   });
 
-  asyncIt('passes along the previously resolved value to each iteration of the predicate', () => {
+  it('passes along the previously resolved value to each iteration of the predicate', () => {
     const obj = { value: false };
 
     setTimeout(() => {
@@ -101,7 +101,7 @@ describe('waitUntil', () => {
     waitUntil(theResolvedObject => expect(theResolvedObject.value).to.be.true());
   });
 
-  asyncIt('polls at every hundred milliseconds', (done) => {
+  it('polls at every hundred milliseconds', (done) => {
     let value = false;
     let didComplete = false;
 
@@ -126,7 +126,7 @@ describe('waitUntil', () => {
     }, 1500);
   });
 
-  asyncIt('makes first poll immediately', () => {
+  it('makes first poll immediately', () => {
     let value = true;
 
     setTimeout(() => {

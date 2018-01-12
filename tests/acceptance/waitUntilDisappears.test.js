@@ -1,4 +1,4 @@
-import { asyncIt, setupAsync, andThen, waitUntilDisappears } from '../../src';
+import { asyncIt as it, setupAsync, andThen, waitUntilDisappears } from '../../src';
 
 describe('waitUntilDisappears', () => {
   setupAsync();
@@ -6,7 +6,7 @@ describe('waitUntilDisappears', () => {
   const label = document.createElement('label');
   label.innerHTML = 'foobar';
 
-  asyncIt('resolve when the object disappears after having showed', (done) => {
+  it('resolve when the object disappears after having showed', (done) => {
     let callback = sinon.spy();
 
     waitUntilDisappears('label:contains("foobar")');

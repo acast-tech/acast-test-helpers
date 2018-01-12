@@ -1,5 +1,5 @@
 import {
-  asyncIt,
+  asyncIt as it,
   click,
   mouseDown,
   mouseUp,
@@ -24,7 +24,7 @@ describe('keyEventIn', () => {
     element = null;
   });
 
-  asyncIt('waits for selector to show up and then triggers a key event in it', (done) => {
+  it('waits for selector to show up and then triggers a key event in it', (done) => {
     function callback(event) {
       expect(event.bubbles).to.be.true();
       expect(event.keyCode).to.equal(39);

@@ -1,5 +1,5 @@
 import {
-  asyncIt,
+  asyncIt as it,
   touchStart,
   touchMove,
   touchCancel,
@@ -35,7 +35,7 @@ describe('Touch Events', () => {
           document.body.removeChild(elementToInteractWith);
         });
     
-        asyncIt(`triggers ${eventName} event on selected element`, () => {
+        it(`triggers ${eventName} event on selected element`, () => {
           attachElementToBody();
           const spy = sinon.spy();
           elementToInteractWith.addEventListener(eventName, spy);
@@ -45,7 +45,7 @@ describe('Touch Events', () => {
           });
         });
 
-        asyncIt('triggers event that bubbles', (done) => {
+        it('triggers event that bubbles', (done) => {
           const element = attachElementToBody();
           const spy = sinon.spy();
           $(element).on(eventName, e => {
@@ -55,7 +55,7 @@ describe('Touch Events', () => {
           helperToTest(element);
         });
     
-        asyncIt('waits until element shows up before trying to interact with it', () => {
+        it('waits until element shows up before trying to interact with it', () => {
           const spy = sinon.spy();
           $(elementToInteractWith).on(eventName, spy);
           helperToTest('.element-to-interact-with');
@@ -66,7 +66,7 @@ describe('Touch Events', () => {
           setTimeout(attachElementToBody, 500);
         });
     
-        asyncIt('takes extra options as parameters', (done) => {
+        it('takes extra options as parameters', (done) => {
           const element = attachElementToBody();
           const handleEvent = e => {
             expect(e.touches[0].clientX).to.equal(1337);
@@ -96,7 +96,7 @@ describe('Touch Events', () => {
           });
         });
     
-        asyncIt('evaluates options lazily if passed as function', (done) => {
+        it('evaluates options lazily if passed as function', (done) => {
           let screenX = 42;
     
           andThen(() => {

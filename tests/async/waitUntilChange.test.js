@@ -1,8 +1,8 @@
-import { asyncIt, setupAsync, waitUntil, waitUntilChange, andThen } from '../../src';
+import { asyncIt as it, setupAsync, waitUntil, waitUntilChange, andThen } from '../../src';
 
 describe('waitUntilChange', () => {
   setupAsync();
-  asyncIt('moves on when the predicate returns a different value than the first call', () => {
+  it('moves on when the predicate returns a different value than the first call', () => {
     let value = 4;
 
     setTimeout(() => {
@@ -14,7 +14,7 @@ describe('waitUntilChange', () => {
     andThen(resolvedValue => expect(resolvedValue).to.equal(0));
   });
 
-  asyncIt('passes the chained value to predicate', () => {
+  it('passes the chained value to predicate', () => {
     const obj = { value: 4 };
 
     setTimeout(() => {
