@@ -42,16 +42,24 @@ export function setupAsync() {
 
     const timeout = this.currentTest.timeout();
     this.currentTest.timeout(0); // disable built-in timeout;
-
-    timeoutHandle = setTimeout(() => {
-      throw new Error(getErrorMessage());
-    }, timeout);
+    setCustomTimeout(timeout);
+    this.currentTest.timeout = setCustomTimeout;
   });
 
   afterEach('remove test promise', () => {
     testPromise = null;
     clearTimeout(timeoutHandle);
   });
+
+  function setCustomTimeout(timeoutMillis) {
+    if (!timeoutMillis) {
+      return;
+    }
+    clearTimeout(timeoutHandle);
+    timeoutHandle = setTimeout(() => {
+      throw new Error(getErrorMessage());
+    }, timeoutMillis);
+  }
 }
 
 /**
@@ -77,9 +85,9 @@ function createAsyncIt(regularItFunction) {
 }
 
 function wrapForAsyncIt(func) {
-  const wrappedBody = done => {
+  function wrappedBody(done) {
     isInsideAsyncIt = true;
-    const funcResult = func(done);
+    const funcResult = func.call(this, done);
     isInsideAsyncIt = false;
 
     if (isPromise(funcResult)) {
@@ -90,12 +98,16 @@ function wrapForAsyncIt(func) {
     }
 
     return testPromise;
-  };
+  }
 
   const funcTakesDoneAsParameter = func.length === 1;
   const wrapperFunc = funcTakesDoneAsParameter
-    ? done => wrappedBody(done)
-    : () => wrappedBody();
+    ? function(done) {
+        return wrappedBody.call(this, done);
+      }
+    : function() {
+        return wrappedBody.call(this);
+      };
 
   wrapperFunc.toString = () => func.toString();
 
@@ -109,10 +121,12 @@ function isPromise(maybePromise) {
 }
 
 function getErrorMessage() {
-  if (typeof currentErrorMessage === 'function') {
-    return currentErrorMessage();
-  }
-  return currentErrorMessage;
+  const defaultErrorMessage =
+    'acast-test-helpers#asyncIt(): Test case timed out with no specific error message.';
+  const errorMessage = typeof currentErrorMessage === 'function'
+    ? currentErrorMessage()
+    : currentErrorMessage;
+  return errorMessage || defaultErrorMessage;
 }
 
 /**
