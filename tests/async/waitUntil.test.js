@@ -20,14 +20,17 @@ describe('waitUntil', () => {
     waitUntil(() => {
       console.log('this should stop logging after test times out');
     });
+    // This fails, manually check the error message.
   });
 
   it.skip('handles expections, returning the message of the last one upon timeout', () => {
     waitUntil(() => expect('foo').to.equal('bar'));
+    // This fails, manually check the error message.
   });
 
   it.skip('handles expections, returning the lazily evaluated message from the optional function passed', () => {
     waitUntil(() => false, () => 13 + 37);
+    // This fails, manually check the error message.
   });
 
   it('handles exceptions, silently treating them as falsy return values', () => {

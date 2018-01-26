@@ -1,4 +1,4 @@
-import { asyncIt, setupAsync, andThen } from '../../src';
+import { asyncIt, setupAsync, andThen, waitUntil } from '../../src';
 
 describe('andThen', () => {
   describe('without having called setupAsync()', () => {
@@ -16,6 +16,28 @@ describe('andThen', () => {
       expect(() => {
         andThen();
       }).to.throw('acast-test-helpers#andThen(): You can only use the async functions from acast-test-helpers inside asyncIt.');
+    });
+
+    asyncIt.skip('fails with optional custom error message if promise returned in andThen never resolves', () => {
+      andThen(() => new Promise(() => {}), () => 'This is a custom error message that should be shown when the test fails!');
+      // This fails, manually check the error message.
+    });
+
+    asyncIt.skip('fails with default error message if promise returned in andThen never resolves', () => {
+      andThen(() => new Promise(() => {}));
+      // This fails, manually check the error message.
+    });
+
+    asyncIt.skip('does not override error message until execution', () => {
+      waitUntil(() => false, 'This should be shown');
+      andThen(() => new Promise(() => {}), 'This should not be shown when this test fails.');
+      // This fails, manually check the error message.
+    });
+
+    asyncIt.skip('overrides error message upon execution', () => {
+      waitUntil(() => true, 'This should not be shown.');
+      andThen(() => new Promise(() => {}), 'This should be shown when the test fails.');
+      // This fails, manually check the error message.
     });
 
     asyncIt('chains off of a global promise (behind the curtains)', () => {

@@ -122,7 +122,7 @@ function isPromise(maybePromise) {
 
 function getErrorMessage() {
   const defaultErrorMessage =
-    'acast-test-helpers#asyncIt(): Test case timed out with no specific error message.';
+    'acast-test-helpers#asyncIt(): Timed out - `done` callback was never called.';
   const errorMessage = typeof currentErrorMessage === 'function'
     ? currentErrorMessage()
     : currentErrorMessage;
@@ -140,7 +140,10 @@ function getErrorMessage() {
  * });
  *
  */
-export function andThen(doThis) {
+export function andThen(
+  doThis,
+  errorMessage = 'acast-test-helpers#andThen(): Returned promise never resolved.'
+) {
   if (!testPromise) {
     throw new Error(
       'acast-test-helpers#andThen(): You cannot use the async functions unless you call setupAsync() at the root of the appropriate describe()!'
@@ -152,8 +155,10 @@ export function andThen(doThis) {
       'acast-test-helpers#andThen(): You can only use the async functions from acast-test-helpers inside asyncIt. Also note that you cannot nest calls to async functions.'
     );
   }
-
-  testPromise = testPromise.then(doThis);
+  testPromise = testPromise.then(chainedValue => {
+    currentErrorMessage = errorMessage;
+    return doThis(chainedValue);
+  });
 }
 
 function resolveWhenPredicateReturnsTruthy(predicate, resolve, chainedValue) {
@@ -198,13 +203,13 @@ export function waitUntil(
   andThen(
     chainedValue =>
       new Promise(resolve => {
-        currentErrorMessage = errorMessage;
         resolveWhenPredicateReturnsTruthy(
           thisReturnsTruthy,
           resolve,
           chainedValue
         );
-      })
+      }),
+    errorMessage
   );
 }
 
@@ -219,9 +224,9 @@ export function waitMillis(milliseconds) {
   andThen(
     () =>
       new Promise(resolve => {
-        currentErrorMessage = `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`;
         setTimeout(resolve, milliseconds);
-      })
+      }),
+    `acast-test-helpers#waitMillis() timed out while waiting ${milliseconds} milliseconds`
   );
 }
 
