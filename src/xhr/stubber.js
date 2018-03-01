@@ -36,12 +36,17 @@ function FakeRequest() {
   FakeXMLHttpRequest.call(this);
   fakehr.addRequest(this);
 
-  this.respondWithJson = (statusCode, payload) =>
+  this.respondWithJson = (statusCode=200, payload={}) => {
+    if (typeof statusCode !== 'number') {
+      payload = statusCode;
+      statusCode = 200;
+    }
     this.respond(
       statusCode,
       { 'Content-Type': 'application/json' },
       JSON.stringify(payload)
-    );
+    )
+  };
 
   this.respondWithOctetStream = (statusCode, buffer) => {
     this.responseType = 'arraybuffer';
