@@ -296,11 +296,19 @@ export function fillIn(selector, value) {
       potential => target instanceof potential
     );
 
+    if (!inputClass) {
+      throw new Error(`acast-test-helpers#fillIn(): Selector '${selector}' matched invalid type. fillIn() can only be used on elements of type 'input', 'select' or 'textarea'!`);
+    }
+
     const originalValueSetter = Object.getOwnPropertyDescriptor(
       inputClass.prototype,
       'value'
     ).set; // https://github.com/cypress-io/cypress/issues/536#issuecomment-311694226
     originalValueSetter.call(target, value);
+
+    if (value && target.value !== value.toString()) {
+      throw new Error(`acast-test-helpers#fillIn(): Failed to set value '${value}' on element matched by selector '${selector}'! If it's a <select>, make sure the filled in value is one of the options.`);
+    }
 
     target.dispatchEvent(new Event('input', { bubbles: true }));
     target.dispatchEvent(new Event('change', { bubbles: true }));
