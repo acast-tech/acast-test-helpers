@@ -47,6 +47,6 @@
   },
   "dependencies": {
     "fake-xml-http-request": "1.4.0",
-    "jquery": "2.2.3"
+    "jquery": "3.3.1"
   }
 }
