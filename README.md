@@ -611,4 +611,4 @@ andThen(request => {
 Extends [FakeXMLHttpRequest](https://github.com/pretenderjs/FakeXMLHttpRequest) to register each new request with fakehr
 
 Also has the convenience method `respondWithJson` that takes two arguments:
-the HTTP status code as an int, and the response body as a plain object (that will be stringified by the function)
+the HTTP status code as an int (optional, defaults to 200), and the response body as a plain object (also optional)
