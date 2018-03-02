@@ -57,6 +57,55 @@ describe('fake xhr', () => {
       }, 1000);
     });
   });
+
+  describe('request object', () => {
+    beforeEach(startFakingXhr);
+    afterEach(stopFakingXhr);
+
+    describe('respond', () => {
+      it('can be used to respond manually with status code and headers', () => {
+        const request = sendRequest('GET', '/some/endpoint');
+        request.respond(200, {'Some-Header': 'some-header-value'}, JSON.stringify({someBodyKey: 'someBodyValue'}));
+
+        expect(request.readyState).to.equal(4);
+        expect(request.status).to.equal(200);
+        expect(request.responseHeaders).to.deep.equal({'Some-Header': 'some-header-value'});
+        expect(JSON.parse(request.responseText)).to.deep.equal({someBodyKey: 'someBodyValue'});
+      });
+    });
+
+    describe('respondWithJson', () => {
+      it('can be used as convenience method to send JSON without having to stringify body and set JSON header', () => {
+        const request = sendRequest('GET', '/some/endpoint');
+        request.respondWithJson(200, {someBodyKey: 'someBodyValue'});
+
+        expect(request.readyState).to.equal(4);
+        expect(request.status).to.equal(200);
+        expect(request.responseHeaders).to.deep.equal({'Content-Type': 'application/json'});
+        expect(JSON.parse(request.responseText)).to.deep.equal({someBodyKey: 'someBodyValue'});
+      });
+
+      it('sets status to 200 by default', () => {
+        const request = sendRequest('GET', '/some/endpoint');
+        request.respondWithJson({someBodyKey: 'someBodyValue'});
+
+        expect(request.readyState).to.equal(4);
+        expect(request.status).to.equal(200);
+        expect(request.responseHeaders).to.deep.equal({'Content-Type': 'application/json'});
+        expect(JSON.parse(request.responseText)).to.deep.equal({someBodyKey: 'someBodyValue'});
+      });
+
+      it('can be used to simply send status', () => {
+        const request = sendRequest('GET', '/some/endpoint');
+        request.respondWithJson(404);
+
+        expect(request.readyState).to.equal(4);
+        expect(request.status).to.equal(404);
+        expect(request.responseHeaders).to.deep.equal({'Content-Type': 'application/json'});
+        expect(JSON.parse(request.responseText)).to.deep.equal({});
+      });
+    });
+  });
 });
 
 
