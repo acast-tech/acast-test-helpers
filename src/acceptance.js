@@ -163,6 +163,30 @@ export function mouseMove(selector, options) {
 }
 
 /**
+ * Waits for an element to show up, and then simulates a user mouse over by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate mouse move on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * mouseDown('.element-to-mouse-move-on', { clientX: 1337, clientY: 1338 });
+ */
+export function mouseOver(selector, options) {
+  triggerMouseEvent(mouseOver, selector, options);
+}
+
+/**
+ * Waits for an element to show up, and then simulates a user mouse out by triggering a mouse event on that element.
+ * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate mouse move on.
+ * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
+ * @param {object} [options] Any options to pass along to the simulated mouse event.
+ * @example
+ * mouseDown('.element-to-mouse-move-on', { clientX: 1337, clientY: 1338 });
+ */
+export function mouseOut(selector, options) {
+  triggerMouseEvent(mouseOut, selector, options);
+}
+
+/**
  * Waits for an element to show up, and then simulates a user touch start by triggering a touch event on that element.
  * @param {string|jQuery} selector The jQuery selector or jQuery object to simulate touch on.
  * Note that the selector or jQuery object must represent exactly one (1) element in the app, or the call will fail.
