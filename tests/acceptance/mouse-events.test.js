@@ -4,6 +4,8 @@ import {
   mouseDown,
   mouseUp,
   mouseMove,
+  mouseOver,
+  mouseOut,
   setupAsync,
   andThen,
   jQuery as $
@@ -31,6 +33,8 @@ describe('Mouse Events', () => {
   describeMouseEventHelper(mouseDown, 'mousedown');
   describeMouseEventHelper(mouseUp, 'mouseup');
   describeMouseEventHelper(mouseMove, 'mousemove');
+  describeMouseEventHelper(mouseOver, 'mouseover');
+  describeMouseEventHelper(mouseOut, 'mouseout');
 
   function describeMouseEventHelper(helperToTest, eventName, extraTests = ()=> {
   }) {
