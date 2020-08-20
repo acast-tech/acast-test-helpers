@@ -1,5 +1,5 @@
 {
-  "name": "@acast/test-helpers",
+  "name": "@acast-tech/test-helpers",
   "version": "14.1.0",
   "description": "A bunch of helper methods that greatly simplify asynchronous unit and acceptance testing of front end web apps.",
   "main": "dist/index.js",
