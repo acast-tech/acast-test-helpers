@@ -43,7 +43,7 @@
     "sinon": "1.17.4",
     "sinon-chai": "2.8.0",
     "testem": "1.7.0",
-    "webpack": "1.13.0"
+    "webpack": "5.94.0"
   },
   "dependencies": {
     "fake-xml-http-request": "1.4.0",
